@@ -11,7 +11,7 @@ export const defaultProgress: UserProgress = {
   masteredStepIds: [],
   weakTopicIds: [],
   currentWorldId: "w1",
-  currentMissionId: "m01",
+  currentMissionId: "q1m01",
   lastPlayedAt: null,
 };
 
@@ -31,7 +31,7 @@ function normalizeProgress(value: unknown): UserProgress {
     masteredStepIds: isStringArray(candidate.masteredStepIds) ? candidate.masteredStepIds : [],
     weakTopicIds: isStringArray(candidate.weakTopicIds) ? candidate.weakTopicIds : [],
     currentWorldId: typeof candidate.currentWorldId === "string" ? candidate.currentWorldId : "w1",
-    currentMissionId: typeof candidate.currentMissionId === "string" ? candidate.currentMissionId : "m01",
+    currentMissionId: typeof candidate.currentMissionId === "string" ? candidate.currentMissionId : "q1m01",
     lastPlayedAt: typeof candidate.lastPlayedAt === "string" ? candidate.lastPlayedAt : null,
   };
 }

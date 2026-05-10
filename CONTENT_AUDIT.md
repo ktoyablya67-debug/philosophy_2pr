@@ -1,38 +1,74 @@
-# CONTENT_AUDIT
-
-Дата аудита: 2026-05-10.
+# CONTENT AUDIT
 
 ## Textbook Extraction Status
 
-| Поле | Значение |
+| item | status |
 |---|---|
-| PDF | `Философия учебник издание 2022 г. (1) (1).pdf` |
-| Python script | `scripts/extract_textbook_pages.py` создан, но `py` не запускает Python runtime на этой машине: `No installed Python found!` |
-| Фактический способ извлечения | Node fallback `scripts/extract_textbook_pages_node.mjs` через локальный пакет `pdf-parse` |
-| Извлечённые страницы | partial pages 34-52 |
-| Извлечённый текст | `materials/extracted/textbook_chapter2_pages_34_52.txt` |
-| Отчёт | `materials/extracted/textbook_extraction_report.md` |
-| Найден 2.2 | OK |
-| Найден 2.3 | OK |
-| Найден 2.4 | OK |
-| Найден 2.5 | OK |
+| PDF found | `Философия учебник издание 2022 г. (1) (1).pdf` |
+| Python script | `python` command unavailable on this machine |
+| Working extraction method | `node scripts/extract_textbook_pages_node.mjs` with `pdf-parse` |
+| Extracted text | `materials/extracted/textbook_chapter2_pages_34_52.txt` |
+| Range | textbook chapter 2 pages 34-52, adjusted by script search |
+| Section 2.2 found | OK |
+| Section 2.3 found | OK |
+| Section 2.4 found | OK |
+| Section 2.5 found | OK |
 
-## Audit Table
+## Seminar Question Coverage
 
-| seminarQuestionId | полный вопрос листка | страницы учебника | разделы учебника | миссии | coveredNotebookTerms | missingNotebookTerms | bossQuestions | traps | sourceStatusSummary | textbookVerifiedMissions | assignmentBasedMissions | needsReviewMissions | comment |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| sq1 | Теоцентризм как особенность мировоззрения эпохи европейского Средневековья: теизм, креационизм, сотериология/учение о душе, эсхатология. Патристика: Августин, спор с Пелагием, время, град земной и небесный; Бог, мир, человек, заповеди, сравнение с античностью. | 34-37 | 2.2. Философия Средних веков | m01, m02, m03, m04, m05, m06 | medieval_features | Нет | m01-final-boss, m02-final-boss, m03-final-boss, m04-final-boss, m05-final-boss, m06-final-boss | m01-trap, m02-trap, m03-trap, m04-trap, m05-trap, m06-trap | 1 textbook_verified, 5 assignment_based | m01 | m02, m03, m04, m05, m06 | Нет | Черты средневековой философии, теоцентризм и креационизм найдены в учебнике. Пелагий, 10 заповедей и два града в извлечённом тексте прямо не найдены, поэтому соответствующие миссии оставлены assignment_based. |
-| sq2 | Средневековая схоластика: вера и разум; универсалии, реализм, номинализм; Фома Аквинский и 5 доказательств; сравнить патристику и схоластику. | 35-36 | 2.2. Философия Средних веков | m07, m08, m09, m10, m11 | universals, realism, nominalism, conceptualism, medieval_features | Нет | m07-final-boss, m08-final-boss, m09-final-boss, m10-final-boss, m11-final-boss | m07-trap, m08-trap, m09-trap, m10-trap, m11-trap | 3 textbook_verified, 2 assignment_based | m07, m08, m09 | m10, m11 | Нет | Универсалии, реализм, номинализм, концептуализм и Фома Аквинский найдены. Пять доказательств и сравнение патристики/схоластики требуют ручной сверки деталей. |
-| sq3 | Гуманизм и антропоцентризм эпохи Возрождения: натурфилософия, Коперник, Бруно, политические учения Макиавелли, Мора, Кампанеллы; античность, гуманисты, пантеизм и бесконечность Вселенной. | 38-41 | 2.3. Философия эпохи Возрождения | m12, m13, m14, m15, m16 | humanism, anthropocentrism, renaissance_natural_philosophy, pantheism | Нет | m12-final-boss, m13-final-boss, m14-final-boss, m15-final-boss, m16-final-boss | m12-trap, m13-trap, m14-trap, m15-trap, m16-trap | 5 textbook_verified | m12, m13, m14, m15, m16 | Нет | Нет | Раздел 2.3 подтверждает гуманизм, античность, натурфилософию, Кузанского/Бруно, пантеизм, Коперника, бесконечность Вселенной и Макиавелли/Мора/Кампанеллу. |
-| sq4 | Научная революция XVII века и её влияние на философию Нового времени: проблема научного метода в эмпиризме Бэкона и рационализме Декарта; идолы, индукция, дедукция, Cogito, правила истины. | 43-48 | 2.4. Философия Нового времени | m17, m18, m19, m20 | empiricism, rationalism, bacon_idols, induction, deduction, substance, deism, dualism | Нет | m17-final-boss, m18-final-boss, m19-final-boss, m20-final-boss | m17-trap, m18-trap, m19-trap, m20-trap | 4 textbook_verified | m17, m18, m19, m20 | Нет | Нет | Учебник подтверждает научную революцию, проблему метода, Бэкона, идолы рода/пещеры/рынка/театра, индукцию, Декарта, сомнение, Cogito, правила метода, дедукцию, деизм и дуализм. |
-| sq5 | Свободомыслие и рационализм Просвещения: природа, деизм, атеизм, механистический материализм; человек, природа человека, воспитание; общество и общественный договор Гоббса, Локка, Руссо. | 48-52 | 2.5. Философия Просвещения | m21, m22, m23, m24, m25 | substance, deism, dualism, mechanistic_materialism, materialism, atheism, social_contract | Нет | m21-final-boss, m22-final-boss, m23-final-boss, m24-final-boss, m25-final-boss | m21-trap, m22-trap, m23-trap, m24-trap, m25-trap | 5 textbook_verified | m21, m22, m23, m24, m25 | Нет | Нет | Раздел 2.5 подтверждает Вольтера, Руссо, Дидро, французских материалистов, механистический материализм, деизм, материализм, атеизм, воспитание, среду, Руссо и общественный договор. |
+| seminarQuestionId | full assignment question | textbook pages | textbook sections | micro-missions | coveredNotebookTerms | missingNotebookTerms | teacherQuestions | bossQuestions | traps | full-answer mission | sourceStatusSummary | comment |
+|---|---|---|---|---|---|---|---:|---:|---:|---|---|---|
+| q1 | Theocentrism of European Medieval worldview; theism, creationism, soteriology, eschatology; patristics, Augustine, Pelagius, time, earthly/heavenly city; God/world/person, commandments, love, comparison with antiquity. | 34 | 2.2 | q1m01-q1m11 | medieval_features | none | 55 | 21 | 22 | q1m11 | 5 textbook_verified, 5 assignment_based, 1 needs_textbook_review | Textbook supports medieval features, theocentrism, patristics and comparison. Augustine/Pelagius, time, cities and commandments are required by the sheet and kept honest as assignment-based/review. |
+| q2 | Medieval scholasticism; faith and reason; universals, realism, nominalism; Aquinas and five proofs; compare patristics and scholasticism. | 35-36 | 2.2 | q2m01-q2m09 | universals, realism, nominalism, conceptualism | none | 45 | 19 | 18 | q2m09 | 9 textbook_verified | Rebuilt around exact distinctions: universals, realism, nominalism, conceptualism, Aquinas, faith/reason, patristics vs scholasticism. |
+| q3 | Renaissance humanism and anthropocentrism; natural philosophy, Copernicus, Bruno; Machiavelli, More, Campanella; antiquity, humanists, infinity and pantheism. | 38-41 | 2.3 | q3m01-q3m11 | humanism, anthropocentrism, natural_philosophy, pantheism | none | 55 | 22 | 22 | q3m11 | 11 textbook_verified | Corrects key traps: humanism is not simple kindness, Bruno did not experimentally prove infinity, Renaissance did not merely reject the Middle Ages. |
+| q4 | Scientific revolution of the 17th century; method in Bacon's empiricism and Descartes' rationalism; idols, induction, doubt, cogito, reason, rules, deduction. | 44-46 | 2.4 | q4m01-q4m13 | empiricism, rationalism, bacon_idols, induction, deduction | none | 65 | 25 | 26 | q4m13 | 13 textbook_verified | Focus is now the teacher's likely comparison: Bacon from experience/induction, Descartes from reason/doubt/deduction. |
+| q5 | Enlightenment free thought and rationalism; nature, deism, atheism, mechanistic materialism; person, education; society and social contract in Hobbes, Locke, Rousseau. | 48-52 | 2.5 | q5m01-q5m14 | deism, atheism, materialism, mechanistic_materialism, substance, dualism, social_contract | none | 70 | 28 | 28 | q5m14 | 11 textbook_verified, 3 assignment_based | Textbook supports the main Enlightenment framework. Hobbes/Locke/comparative details are kept assignment-based where the extracted text is thinner than the sheet. |
 
-## Source Status Summary
+## Notebook Terms
 
-- `textbook_verified`: 18 миссий.
-- `assignment_based`: 7 миссий.
-- `needs_textbook_review`: 1 миссия, финальный смешанный босс `m26`.
+All required notebook terms are linked to at least one mission:
 
-## Notes
+- medieval_features
+- universals
+- realism
+- nominalism
+- conceptualism
+- humanism
+- pantheism
+- natural_philosophy
+- anthropocentrism
+- empiricism
+- rationalism
+- bacon_idols
+- induction
+- deduction
+- substance
+- deism
+- dualism
+- mechanistic_materialism
+- materialism
+- atheism
+- social_contract
 
-Запрещённые искажения проверены поиском. Грубые формулы вроде “эмпиризм = эмоции”, “деизм = теизм”, “Бэкон рационалист, Декарт эмпирик” не используются как утверждения учебного ответа.
+## Quality Audit
+
+The following placeholder style was removed from game content:
+
+- reusable generic mission phrasing;
+- obvious distractors about random facts or everyday rules;
+- vague prompts asking for the "best formulation";
+- author/name lists without conceptual links.
+
+Every micro-mission now has:
+
+- direct assignment prompt;
+- source status and source refs;
+- lesson tied to the assignment subtopic;
+- at least five teacher-style questions;
+- one choice step;
+- one duel/distinction step;
+- one trap step;
+- one argument assembly step;
+- a final boss question.
+
+Each q1-q5 chapter has an итоговый ответ mission with strict boss-style questions.

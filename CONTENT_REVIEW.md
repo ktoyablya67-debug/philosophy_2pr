@@ -1,39 +1,55 @@
 # CONTENT REVIEW
 
-PDF учебника РТУ МИРЭА 2022 года найден в корне проекта.
+## Textbook status
 
-Текст главы 2, страницы 34-52, извлечён в:
+PDF found: `Философия учебник издание 2022 г. (1) (1).pdf`.
 
-`materials/extracted/textbook_chapter2_pages_34_52.txt`
+Python extraction could not be run on this machine because the `python` command is not installed. Text was extracted with the Node fallback script `scripts/extract_textbook_pages_node.mjs` using `pdf-parse`.
 
-Отчёт извлечения:
+Extracted text: `materials/extracted/textbook_chapter2_pages_34_52.txt`.
 
-`materials/extracted/textbook_extraction_report.md`
+Found textbook sections:
 
-## Что сверено по учебнику
+- `2.2. Философия Средних веков`
+- `2.3. Философия эпохи Возрождения`
+- `2.4. Философия Нового времени (XVII в.) и научная революция`
+- `2.5. Философия Просвещения (XVIII в.)`
 
-- Раздел 2.2: черты средневековой философии, теоцентризм, креационизм, патристика/схоластика, вера и разум, универсалии, реализм, номинализм, концептуализм, Фома Аквинский.
-- Раздел 2.3: гуманизм, антропоцентризм, натурфилософия, пантеизм, Коперник, Бруно, бесконечность Вселенной, Макиавелли, Мор, Кампанелла.
-- Раздел 2.4: научная революция, метод, эмпиризм, Бэкон, 4 идола, индукция, рационализм, Декарт, сомнение, Cogito, правила метода, дедукция, деизм, дуализм.
-- Раздел 2.5: Просвещение, Вольтер, Руссо, Дидро, механистический материализм, материализм, атеизм, воспитание, общественная среда, общественный договор.
+## What changed
 
-## Что осталось assignment_based
+The old content was too generic: many lessons were built around reusable phrasing instead of the actual seminar sheet. The new `gameData.ts` is rebuilt around the five oral questions from the assignment sheet.
 
-Некоторые пункты листка не находятся в извлечённом тексте напрямую или требуют ручной детализации:
+Current structure:
 
-- сотериология как термин;
-- 10 заповедей Ветхого Завета;
-- заповедь любви;
-- спор Августина с Пелагием;
-- учение Августина о времени;
-- град земной и град небесный;
-- пять доказательств Фомы в полном перечислении;
-- сравнение патристики и схоластики в формате ответа преподавателю.
+- Q1: 11 micro-missions on medieval theocentrism, patristics, Augustine, commandments, and comparison with antiquity.
+- Q2: 9 micro-missions on scholasticism, faith and reason, universals, Aquinas, and patristics vs scholasticism.
+- Q3: 11 micro-missions on Renaissance humanism, anthropocentrism, natural philosophy, Copernicus, Bruno, and politics.
+- Q4: 13 micro-missions on the scientific revolution, Bacon, idols, induction, Descartes, doubt, cogito, rules, and deduction.
+- Q5: 14 micro-missions on Enlightenment reason, nature, deism, atheism, materialism, education, and social contract theories.
 
-## Что осталось needs_textbook_review
+## Source status
 
-- `m26` финальный смешанный босс, потому что он агрегирует все темы и не должен быть помечен как проверенный по одному фрагменту.
+- `textbook_verified`: 49 missions.
+- `assignment_based`: 8 missions.
+- `needs_textbook_review`: 2 missions.
 
-## Что безопасно учить через приложение
+`textbook_verified` is used only where the extracted text supports the section/page reference. Assignment-only details remain marked honestly.
 
-Безопасно использовать приложение как тренажёр по структуре листка, основным понятиям и устным связкам. Перед семинаром студенту нужно отдельно сверить assignment_based-пункты с учебником/конспектом преподавателя, особенно Августина, Пелагия, заповеди и пять доказательств Фомы.
+## Needs manual textbook review
+
+- Augustine on time: included from the assignment sheet and standard Augustine material, but the extracted pages did not provide enough direct text for full verification.
+- Final mixed boss: combines all assignment questions, so it has no single textbook passage.
+
+## Assignment-based items
+
+These are required by the sheet and safe to train, but exact wording should be checked against the printed/SДО material if the teacher expects a specific formulation:
+
+- Augustine vs Pelagius.
+- Soteriology as wording in the sheet.
+- Earthly city and heavenly city.
+- Ten Commandments and commandment of love.
+- Hobbes, Locke, and comparison of state theories where the extracted pages give less detail than the assignment demands.
+
+## Safe to study through the app
+
+The app is now aligned to the assignment sheet structure. It trains each required oral question through explanation, teacher-style questions, traps, argument assembly, and boss questions. The strongest textbook-backed blocks are scholasticism, Renaissance philosophy, Bacon and Descartes, and the main Enlightenment nature/person/society framework.

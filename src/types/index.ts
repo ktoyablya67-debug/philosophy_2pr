@@ -31,6 +31,8 @@ export type SeminarQuestion = {
   title: string;
   source: "assignment-sheet" | "assignment-sheet-inferred";
   wording: string;
+  subpoints: string[];
+  teacherMayAsk: string[];
   mustKnow: string[];
   missionIds: string[];
 };
@@ -39,6 +41,7 @@ export type NotebookTerm = {
   id: string;
   label: string;
   assignmentPages: string[];
+  shortMeaning: string;
   intentionallyStandalone?: boolean;
 };
 
@@ -53,6 +56,9 @@ export type LearningMission = {
   id: string;
   worldId: string;
   seminarQuestionId: string;
+  assignmentQuestionId: "q1" | "q2" | "q3" | "q4" | "q5" | "q-final";
+  assignmentSubtopic: string;
+  directAssignmentPrompt: string;
   sourceStatus: "textbook_verified" | "assignment_based" | "needs_textbook_review";
   sourceNote: string;
   sourceRefs: SourceRefs;
@@ -69,7 +75,13 @@ export type LearningMission = {
   oralAnswer: {
     short: string;
     expanded: string;
+    answer40sec: string;
+    answer2min: string;
+    answerSkeleton: string[];
+    keyPhrases: string[];
   };
+  mustKnow: string[];
+  teacherQuestions: string[];
   teacherTraps: TeacherTrap[];
   steps: MissionStep[];
   finalBossQuestion: BossStep;

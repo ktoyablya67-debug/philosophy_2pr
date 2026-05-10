@@ -44,6 +44,43 @@ export type NotebookCoverageRow = {
 const uniq = <T,>(items: T[]) => new Set(items).size === items.length;
 const hasText = (value: unknown) => typeof value === "string" && value.trim().length > 0;
 const allMissionSteps = (items: LearningMission[]) => items.flatMap((mission) => mission.steps);
+const wordCount = (value: string) => value.trim().split(/\s+/).filter(Boolean).length;
+
+const forbiddenTemplatePhrases = [
+  "тема относится к этапу",
+  "важно не заучивать",
+  "понятие, исторический контекст",
+  "хороший ответ не ограничивается",
+  "что считается главным",
+  "бытовое правило",
+  "современная научная теория",
+  "набор случайных фактов",
+  "что лучше всего передаёт смысл темы",
+  "какая формулировка ближе к миссии",
+];
+
+const weakDistractors = [
+  "оба ответа всегда совпадают",
+  "различия не имеют значения",
+  "можно оставить без исправлений, если произнести её уверенно",
+  "заменить все философские термины бытовыми примерами",
+];
+
+function fullMissionText(mission: LearningMission) {
+  return [
+    mission.title,
+    mission.subtitle,
+    mission.directAssignmentPrompt,
+    mission.lesson.simpleExplanation,
+    mission.lesson.textbookCore,
+    mission.lesson.whyItMatters,
+    mission.oralAnswer.short,
+    mission.oralAnswer.expanded,
+    mission.teacherQuestions.join(" "),
+    mission.steps.map((step) => JSON.stringify(step)).join(" "),
+    JSON.stringify(mission.finalBossQuestion),
+  ].join(" ").toLowerCase();
+}
 
 export function getCoverageRows(): CoverageRow[] {
   return requiredTopics.map((topic) => {
@@ -127,12 +164,18 @@ function validateChoice(step: ChoiceStep, errors: string[]) {
   if (!hasText(step.explanation)) errors.push(`${step.id}: empty explanation`);
   if (step.options.length !== 4) errors.push(`${step.id}: choice must have exactly 4 options`);
   if (step.correctOptionIndex < 0 || step.correctOptionIndex >= step.options.length) errors.push(`${step.id}: correctOptionIndex out of range`);
+  step.options.forEach((option) => {
+    if (weakDistractors.some((phrase) => option.toLowerCase().includes(phrase))) errors.push(`${step.id}: weak placeholder distractor`);
+  });
 }
 
 function validateDuel(step: DuelStep, errors: string[]) {
   if (!hasText(step.question) || !hasText(step.explanation)) errors.push(`${step.id}: empty question or explanation`);
   if (step.options.length !== 4) errors.push(`${step.id}: duel must have exactly 4 options`);
   if (step.correctOptionIndex < 0 || step.correctOptionIndex >= step.options.length) errors.push(`${step.id}: correctOptionIndex out of range`);
+  step.options.forEach((option) => {
+    if (weakDistractors.some((phrase) => option.toLowerCase().includes(phrase))) errors.push(`${step.id}: weak placeholder distractor`);
+  });
 }
 
 function validateTrap(step: TrapStep, errors: string[]) {
@@ -167,7 +210,7 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
   dataMissions.forEach((mission) => {
     if (!worldIds.has(mission.worldId)) errors.push(`${mission.id}: worldId ${mission.worldId} not found`);
     if (!hasText(mission.seminarQuestionId)) errors.push(`${mission.id}: missing seminarQuestionId`);
-    if (mission.seminarQuestionId !== "sq-final" && !seminarQuestions.some((question) => question.id === mission.seminarQuestionId)) {
+    if (mission.seminarQuestionId !== "q-final" && !seminarQuestions.some((question) => question.id === mission.seminarQuestionId)) {
       errors.push(`${mission.id}: seminarQuestionId ${mission.seminarQuestionId} not found`);
     }
     if (!["textbook_verified", "assignment_based", "needs_textbook_review"].includes(mission.sourceStatus)) {
@@ -175,7 +218,7 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
     }
     if (!hasText(mission.sourceNote)) errors.push(`${mission.id}: missing sourceNote`);
     if (!mission.sourceRefs) errors.push(`${mission.id}: missing sourceRefs`);
-    if (mission.id !== "m26" && mission.sourceRefs && mission.sourceRefs.notebookTermIds.length === 0) {
+    if (mission.id !== "qfinal" && mission.sourceRefs && mission.sourceRefs.notebookTermIds.length === 0) {
       errors.push(`${mission.id}: no linked notebookTerm`);
     }
     if (mission.sourceStatus === "textbook_verified") {
@@ -183,6 +226,18 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
       if (!mission.sourceRefs || mission.sourceRefs.textbookSections.length === 0) errors.push(`${mission.id}: textbook_verified without textbookSections`);
     }
     if (!mission.lesson || !hasText(mission.lesson.simpleExplanation) || !hasText(mission.lesson.textbookCore)) errors.push(`${mission.id}: incomplete lesson`);
+    const lessonText = `${mission.lesson.simpleExplanation} ${mission.lesson.textbookCore} ${mission.lesson.whyItMatters}`;
+    if (mission.id !== "qfinal" && wordCount(lessonText) < 180) errors.push(`${mission.id}: lesson shorter than 180 words`);
+    const promptTokens = mission.directAssignmentPrompt
+      .toLowerCase()
+      .split(/[^а-яёa-z0-9]+/i)
+      .filter((token) => token.length > 5);
+    if (mission.id !== "qfinal" && promptTokens.length > 0 && !promptTokens.some((token) => lessonText.toLowerCase().includes(token))) {
+      errors.push(`${mission.id}: lesson does not contain concrete terms from directAssignmentPrompt`);
+    }
+    forbiddenTemplatePhrases.forEach((phrase) => {
+      if (fullMissionText(mission).includes(phrase)) errors.push(`${mission.id}: forbidden template phrase "${phrase}"`);
+    });
     if (!hasText(mission.oralAnswer.short) || !hasText(mission.oralAnswer.expanded)) errors.push(`${mission.id}: incomplete oralAnswer`);
     mission.steps.forEach((step) => validateStep(step, errors));
     validateBoss(mission.finalBossQuestion, errors);
@@ -197,6 +252,26 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
   });
   getNotebookCoverageRows(dataMissions).forEach((row) => {
     if (row.status !== "OK") errors.push(`${row.notebookTermId}: notebook term is not covered`);
+  });
+
+  seminarQuestions.forEach((question) => {
+    const linked = dataMissions.filter((mission) => mission.seminarQuestionId === question.id);
+    if (linked.length < 8) errors.push(`${question.id}: fewer than 8 micro-missions`);
+    if (!linked.some((mission) => mission.assignmentSubtopic.toLowerCase().includes("итоговый ответ"))) {
+      errors.push(`${question.id}: no final full-answer mission`);
+    }
+    const teacherQuestionsCount = linked.reduce((sum, mission) => sum + mission.teacherQuestions.length, 0);
+    if (teacherQuestionsCount < 10) errors.push(`${question.id}: fewer than 10 teacherQuestions`);
+    const bossCount = linked.reduce(
+      (sum, mission) => sum + 1 + mission.steps.filter((step) => step.type === "boss").length,
+      0,
+    );
+    if (bossCount < 8) errors.push(`${question.id}: fewer than 8 boss questions`);
+    const trapCount = linked.reduce(
+      (sum, mission) => sum + mission.teacherTraps.length + mission.steps.filter((step) => step.type === "trap").length,
+      0,
+    );
+    if (trapCount < 8) errors.push(`${question.id}: fewer than 8 trap questions`);
   });
 
   return errors;
