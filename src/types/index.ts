@@ -39,6 +39,8 @@ export type LearningMission = {
   id: string;
   worldId: string;
   seminarQuestionId: string;
+  sourceStatus: "textbook_verified" | "assignment_based" | "needs_textbook_review";
+  sourceNote: string;
   title: string;
   subtitle: string;
   requiredTopics: string[];
