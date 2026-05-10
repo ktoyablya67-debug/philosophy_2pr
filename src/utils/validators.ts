@@ -90,6 +90,12 @@ function fullMissionText(mission: LearningMission) {
     mission.lesson.simpleExplanation,
     mission.lesson.textbookCore,
     mission.lesson.whyItMatters,
+    mission.lesson.blocks?.map((block) => `${block.title} ${block.text}`).join(" "),
+    mission.quickExplain,
+    mission.analogy,
+    mission.memoryHook,
+    mission.miniJoke,
+    mission.keyTakeaways?.join(" "),
     mission.oralAnswer.short,
     mission.oralAnswer.expanded,
     mission.teacherQuestions.join(" "),
@@ -242,9 +248,17 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
       if (!mission.sourceRefs || mission.sourceRefs.textbookSections.length === 0) errors.push(`${mission.id}: textbook_verified without textbookSections`);
     }
     if (!mission.lesson || !hasText(mission.lesson.simpleExplanation) || !hasText(mission.lesson.textbookCore)) errors.push(`${mission.id}: incomplete lesson`);
+    if (!mission.lesson.blocks || mission.lesson.blocks.length < 3) errors.push(`${mission.id}: lesson is not split into micro-blocks`);
+    if (mission.lesson.blocks?.some((block) => wordCount(block.text) > 120)) errors.push(`${mission.id}: lesson block is too long`);
     if (!mission.knowledge || mission.knowledge.definitions.length < 2) errors.push(`${mission.id}: fewer than 2 knowledge definitions`);
+    if (!hasText(mission.quickExplain)) errors.push(`${mission.id}: missing quickExplain`);
+    if (!hasText(mission.analogy)) errors.push(`${mission.id}: missing analogy`);
+    if (!hasText(mission.memoryHook)) errors.push(`${mission.id}: missing memoryHook`);
+    if (!mission.keyTakeaways || mission.keyTakeaways.length < 3) errors.push(`${mission.id}: fewer than 3 keyTakeaways`);
+    if (!mission.visualData || !hasText(mission.visualData.title)) errors.push(`${mission.id}: missing visual block`);
     if (!hasText(mission.answerStrategy)) errors.push(`${mission.id}: missing answerStrategy`);
     const lessonText = `${mission.lesson.simpleExplanation} ${mission.lesson.textbookCore} ${mission.lesson.whyItMatters}`;
+    const lessonBlockText = mission.lesson.blocks?.map((block) => block.text).join(" ") ?? "";
     if (mission.id !== "qfinal" && wordCount(lessonText) < 250) errors.push(`${mission.id}: lesson shorter than 250 words`);
     if (mission.id !== "qfinal" && mission.assignmentSubtopic.toLowerCase().includes("итоговый ответ") && wordCount(lessonText) < 500) {
       errors.push(`${mission.id}: final answer lesson shorter than 500 words`);
@@ -269,6 +283,13 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
       errors.push(`${mission.id}: lesson lacks epoch context`);
     }
     if (!hasText(mission.oralAnswer.short) || !hasText(mission.oralAnswer.expanded)) errors.push(`${mission.id}: incomplete oralAnswer`);
+    if (mission.id !== "qfinal" && wordCount(mission.oralAnswer.answer2min) >= wordCount(lessonText) * 0.9) {
+      errors.push(`${mission.id}: oral answer is almost as long as lesson`);
+    }
+    if (mission.id !== "qfinal" && wordCount(lessonBlockText) < 120) {
+      errors.push(`${mission.id}: explanation section has too little micro-block content`);
+    }
+    if (mission.sourceNote && lessonText.includes(mission.sourceNote)) errors.push(`${mission.id}: source note leaks into lesson`);
     mission.steps.forEach((step) => validateStep(step, errors));
     validateBoss(mission.finalBossQuestion, errors);
   });

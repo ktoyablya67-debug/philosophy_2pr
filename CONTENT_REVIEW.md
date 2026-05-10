@@ -21,6 +21,19 @@ This pass separates learning layers:
 - `answerStrategy`: short guidance for assembling an oral answer.
 - `sourceRefs`: kept for audit and shown in a compact details block, not before the learning material.
 
+## UX Learning Pass
+
+The mission screen was also changed from a long text panel into a set of small learning blocks:
+
+- `introScene`: short mission-room setup.
+- `lesson.blocks`: compact cards for "what it is", simple explanation, distinction, epoch context, manifestation, and mini-conclusion.
+- `quickExplain`: very short human explanation.
+- `analogy`, `memoryHook`, `miniJoke`: lightweight memory support.
+- `keyTakeaways`: 3-6 compressed points.
+- `visualData`: flow, comparison, or card-based visual explanation.
+
+The oral answer is now in an accordion, so the primary screen teaches the material first and only then shows seminar phrasing.
+
 ## Q1 Standard
 
 Q1 was rewritten as the quality benchmark:
@@ -48,6 +61,8 @@ DataCheck now warns if a lesson:
 - has fewer than two definitions;
 - lacks a comparison or distinction;
 - lacks epoch context.
+
+The validator also warns if a mission lacks visual data, quick explanation, analogy, memory hook, key takeaways, or lesson micro-blocks; if a block becomes too long; if the oral answer becomes almost as long as the lesson; or if source notes leak into the lesson.
 
 ## Still Needs Manual Review
 

@@ -12,7 +12,7 @@ export function DataCheckScreen() {
         {errors.length ? (
           <ul className="error-list">{errors.map((error) => <li key={error}>{error}</li>)}</ul>
         ) : (
-          <p>Проверены id, связи миров и миссий, seminarQuestionId, sourceStatus, sourceNote, типы заданий, индексы ответов, boss-ответы, lesson, oralAnswer, requiredTopics и покрытие вопросов листка.</p>
+          <p>Проверены id, связи миров и миссий, sourceStatus, sourceNote, типы заданий, lesson, micro-blocks, visualData, quickExplain, analogy, memoryHook, oralAnswer, requiredTopics и покрытие вопросов листка.</p>
         )}
       </article>
     </section>

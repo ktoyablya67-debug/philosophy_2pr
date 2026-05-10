@@ -52,6 +52,30 @@ export type SourceRefs = {
   notebookTermIds: string[];
 };
 
+export type MissionVisualBlock =
+  | {
+      type: "flow";
+      title: string;
+      items: string[];
+    }
+  | {
+      type: "comparison";
+      title: string;
+      leftTitle: string;
+      rightTitle: string;
+      rows: { label: string; left: string; right: string }[];
+    }
+  | {
+      type: "cards";
+      title: string;
+      cards: { title: string; text: string }[];
+    };
+
+export type LessonBlock = {
+  title: string;
+  text: string;
+};
+
 export type LearningMission = {
   id: string;
   worldId: string;
@@ -66,12 +90,21 @@ export type LearningMission = {
   subtitle: string;
   requiredTopics: string[];
   scene: string;
+  introScene: string;
   lesson: {
     simpleExplanation: string;
     textbookCore: string;
     whyItMatters: string;
     keyTerms: string[];
+    blocks: LessonBlock[];
   };
+  quickExplain: string;
+  analogy: string;
+  memoryHook: string;
+  miniJoke: string;
+  keyTakeaways: string[];
+  visualType: MissionVisualBlock["type"];
+  visualData: MissionVisualBlock;
   knowledge: {
     definitions: string[];
     distinctions: string[];

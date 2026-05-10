@@ -1,6 +1,7 @@
 import type {
   BossStep,
   LearningMission,
+  MissionVisualBlock,
   MissionStep,
   NotebookTerm,
   SeminarQuestion,
@@ -514,7 +515,190 @@ function buildLesson(specItem: MissionSpec) {
     textbookCore: `${base} ${definitions}`,
     whyItMatters: `${specItem.assignmentSubtopic} важно потому, что без него нельзя понять ${specItem.topics.slice(0, 3).join(", ")} в контексте эпохи. Понятие связывает мировоззрение, человека и способ объяснения реальности.`,
     keyTerms: specItem.topics,
+    blocks: buildLessonBlocks(specItem, definitions, base, distinctions, context, manifestation, conclusion),
   };
+}
+
+function buildLessonBlocks(
+  specItem: MissionSpec,
+  definitions: string,
+  base: string,
+  distinctions: string,
+  context: string,
+  manifestation: string,
+  conclusion: string,
+) {
+  const baseBlocks = splitIntoCards(base, "Простыми словами");
+  return [
+    { title: "Что это?", text: definitions },
+    ...baseBlocks,
+    { title: "Чем отличается", text: distinctions },
+    { title: "Контекст эпохи", text: context },
+    { title: "Как это видно в теме", text: manifestation },
+    { title: "Мини-вывод", text: conclusion },
+  ];
+}
+
+function splitIntoCards(text: string, title: string) {
+  const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map((item) => item.trim()).filter(Boolean) ?? [text];
+  const chunks: string[] = [];
+  let current = "";
+  sentences.forEach((sentence) => {
+    const next = current ? `${current} ${sentence}` : sentence;
+    if (next.split(/\s+/).length > 95 && current) {
+      chunks.push(current);
+      current = sentence;
+      return;
+    }
+    current = next;
+  });
+  if (current) chunks.push(current);
+  return chunks.map((chunk, index) => ({ title: chunks.length === 1 ? title : `${title} ${index + 1}`, text: chunk }));
+}
+
+const qVisuals: Record<QuestionId, MissionVisualBlock> = {
+  q1: {
+    type: "flow",
+    title: "Бог -> мир -> человек -> спасение -> вечность",
+    items: ["Бог как центр смысла", "мир сотворён и зависит от Бога", "человек имеет душу и ответственность", "земная жизнь ведёт к спасению", "история открыта к вечности"],
+  },
+  q2: {
+    type: "comparison",
+    title: "Вера и разум в схоластике",
+    leftTitle: "Вера",
+    rightTitle: "Разум",
+    rows: [
+      { label: "Источник", left: "откровение и церковная традиция", right: "понятия, логика, доказательство" },
+      { label: "Роль", left: "даёт высший смысл", right: "помогает прояснить и защитить учение" },
+      { label: "Ловушка", left: "не заменяется логикой", right: "не отменяет веру" },
+    ],
+  },
+  q3: {
+    type: "flow",
+    title: "Античность -> Возрождение -> человек в фокусе",
+    items: ["интерес к античным текстам", "гуманистическое образование", "достоинство человека", "исследование природы", "новые политические проекты"],
+  },
+  q4: {
+    type: "flow",
+    title: "Научная революция -> проблема метода",
+    items: ["старые авторитеты уже недостаточны", "нужны правила познания", "Бэкон идёт через опыт", "Декарт идёт через разум", "метод должен давать достоверность"],
+  },
+  q5: {
+    type: "flow",
+    title: "Природа -> человек -> общество",
+    items: ["природа объясняется законами", "человек меняется через воспитание", "разум критикует суеверия", "общество можно улучшать", "договор объясняет власть"],
+  },
+};
+
+function visualFor(specItem: MissionSpec): MissionVisualBlock {
+  if (specItem.id === "q1m09") {
+    return {
+      type: "cards",
+      title: "10 заповедей и заповедь любви",
+      cards: [
+        { title: "К Богу", text: "не иметь других богов, не создавать кумира, не произносить имя напрасно, помнить день покоя" },
+        { title: "К ближнему", text: "почитать родителей, не убивать, не прелюбодействовать, не красть, не лжесвидетельствовать, не желать чужого" },
+        { title: "Заповедь любви", text: "любовь к Богу и ближнему делает мораль внутренней установкой, а не только списком запретов" },
+      ],
+    };
+  }
+  if (specItem.id === "q2m03") {
+    return {
+      type: "comparison",
+      title: "Реализм / номинализм / концептуализм",
+      leftTitle: "Реализм",
+      rightTitle: "Номинализм и концептуализм",
+      rows: [
+        { label: "Общее", left: "существует реально", right: "является именем или понятием в уме" },
+        { label: "Пример", left: "человечность важнее отдельных людей", right: "есть отдельные люди, а общее мы называем или мыслим" },
+        { label: "Смысл спора", left: "как существует универсальное", right: "как мысль и язык работают с единичным" },
+      ],
+    };
+  }
+  if (specItem.id === "q2m07") {
+    return {
+      type: "cards",
+      title: "5 доказательств Фомы",
+      cards: [
+        { title: "Движение", text: "всё движимое имеет источник движения" },
+        { title: "Причина", text: "цепь причин требует первого основания" },
+        { title: "Необходимость", text: "случайное указывает на необходимое" },
+        { title: "Степени", text: "градации совершенства предполагают максимум" },
+        { title: "Цель", text: "порядок мира указывает на разумную направленность" },
+      ],
+    };
+  }
+  if (specItem.id === "q4m04") {
+    return {
+      type: "cards",
+      title: "4 идола Бэкона",
+      cards: [
+        { title: "Рода", text: "ошибки человеческой природы вообще" },
+        { title: "Пещеры", text: "личные привычки и ограниченный опыт" },
+        { title: "Рынка", text: "путаница языка и общения" },
+        { title: "Театра", text: "доверие готовым системам и авторитетам" },
+      ],
+    };
+  }
+  if (specItem.id === "q4m13") {
+    return {
+      type: "comparison",
+      title: "Бэкон vs Декарт",
+      leftTitle: "Бэкон",
+      rightTitle: "Декарт",
+      rows: [
+        { label: "Старт", left: "опыт и наблюдение", right: "сомнение и разум" },
+        { label: "Метод", left: "индукция", right: "дедукция" },
+        { label: "Риск", left: "идолы и поспешные обобщения", right: "неясные идеи и ошибка суждения" },
+      ],
+    };
+  }
+  if (specItem.id === "q5m13") {
+    return {
+      type: "cards",
+      title: "Гоббс / Локк / Руссо",
+      cards: [
+        { title: "Гоббс", text: "безопасность и сильная власть против войны всех против всех" },
+        { title: "Локк", text: "естественные права, собственность и ограниченная власть" },
+        { title: "Руссо", text: "народный суверенитет и общая воля" },
+      ],
+    };
+  }
+  return qVisuals[specItem.q];
+}
+
+function quickExplainFor(specItem: MissionSpec) {
+  return `${specItem.assignmentSubtopic}: ${specItem.skeleton[0]} ${specItem.skeleton[1] ?? ""}`.trim();
+}
+
+function analogyFor(specItem: MissionSpec) {
+  const byQuestion: Record<QuestionId, string> = {
+    q1: "Представь операционную систему: в Средневековье Бог задаёт настройки мира, морали и истории.",
+    q2: "Схоластика похожа на юридический разбор сложного договора: вера задаёт текст, разум проверяет аргументы.",
+    q3: "Возрождение похоже на открытие старой мастерской античности: инструменты древние, но задачи уже новые.",
+    q4: "Новое время похоже на настройку лаборатории: мало иметь идеи, нужен метод, который не даёт уехать в фантазии.",
+    q5: "Просвещение похоже на включённый свет в комнате: разум проверяет природу, человека и устройство общества.",
+  };
+  return byQuestion[specItem.q];
+}
+
+function memoryHookFor(specItem: MissionSpec) {
+  return `Крючок памяти: ${specItem.duelLeft} vs ${specItem.duelRight}. Если различие держится, тема не распадается.`;
+}
+
+function miniJokeFor(specItem: MissionSpec) {
+  const byQuestion: Record<QuestionId, string> = {
+    q1: "Средневековье: объяснить мир без Бога можно, но эпоха смотрит на тебя очень строго.",
+    q2: "Схоласты спорили так подробно, что современный чат поддержки выглядел бы молчаливым монастырём.",
+    q3: "Возрождение открыло человека заново, но не в режиме селфи, а через достоинство, образование и творчество.",
+    q4: "Бэкон чистит разум от идолов, Декарт перезагружает мышление. Оба не любят интеллектуальный шум.",
+    q5: "Просветители включают разум и сразу видят: общество тоже давно просит обновление.",
+  };
+  return byQuestion[specItem.q];
+}
+
+function keyTakeawaysFor(specItem: MissionSpec) {
+  return [...new Set([...specItem.skeleton, ...specItem.mustKnow])].slice(0, 6);
 }
 
 function buildKnowledge(specItem: MissionSpec) {
@@ -631,7 +815,15 @@ function missionFromSpec(specItem: MissionSpec): LearningMission {
     subtitle: specItem.subtitle,
     requiredTopics: specItem.topics,
     scene: specItem.scene,
+    introScene: `${specItem.scene} Задача комнаты — быстро увидеть смысл темы, а уже потом собрать устный ответ.`,
     lesson: buildLesson(specItem),
+    quickExplain: quickExplainFor(specItem),
+    analogy: analogyFor(specItem),
+    memoryHook: memoryHookFor(specItem),
+    miniJoke: miniJokeFor(specItem),
+    keyTakeaways: keyTakeawaysFor(specItem),
+    visualType: visualFor(specItem).type,
+    visualData: visualFor(specItem),
     knowledge: buildKnowledge(specItem),
     answerStrategy: `Собери ответ коротко: определение -> отличие -> пример из эпохи -> связь с вопросом ${specItem.q.toUpperCase()}.`,
     oralAnswer: {
@@ -674,11 +866,28 @@ const finalMission: LearningMission = {
   subtitle: "финальный смешанный опрос",
   requiredTopics,
   scene: "Аудитория стихает. На доске пять вопросов листка, а преподаватель выбирает любой подпункт.",
+  introScene: "Финальная комната собирает все эпохи в одну карту. Здесь важно не выучить стену текста, а быстро переключаться между понятиями.",
   lesson: {
     simpleExplanation: "Финальный прогон объединяет пять содержательных блоков семинара. Средневековье раскрывается через теоцентризм, патристику и Августина: Бог является центром объяснения мира, человек понимается через душу, грех, благодать и спасение. Схоластика раскрывается через веру, разум, универсалии и Фому Аквинского: христианское учение получает логическую и школьную систематизацию. Возрождение раскрывается через гуманизм, антропоцентризм, натурфилософию и политические проекты: человек, природа и земная жизнь становятся самостоятельными темами философии. Новое время раскрывается через научную революцию, Бэкона и Декарта: главным становится метод достоверного знания, опыт или разум. Просвещение раскрывается через свободомыслие, природу, человека, воспитание и общественный договор: разум используется для критики суеверий и переустройства общества.",
     textbookCore: "Смешанный повтор по разделам 2.2-2.5 и листку задания.",
     whyItMatters: "На семинаре могут спросить любой подпункт, поэтому финальный прогон тренирует не узнавание карточек, а устное владение всей структурой.",
     keyTerms: requiredTopics,
+    blocks: [
+      { title: "Карта семинара", text: "Пять вопросов листка образуют маршрут от теоцентризма Средневековья к рационализму Просвещения." },
+      { title: "Главный навык", text: "Нужно быстро различать эпохи, авторов, методы, понятия и типичные ловушки." },
+      { title: "Финальный смысл", text: "Курс показывает, как меняется центр объяснения: Бог, вера и разум, человек, метод науки, общество." },
+    ],
+  },
+  quickExplain: "Пять вопросов — это пять комнат: Бог, логика веры, человек Возрождения, метод науки, разум Просвещения.",
+  analogy: "Финал похож на карту метро: станции разные, но маршрут держится, если видишь пересадки между эпохами.",
+  memoryHook: "Крючок памяти: Средневековье -> Схоластика -> Возрождение -> Новое время -> Просвещение.",
+  miniJoke: "Финальный босс не страшный, если не пытаться отвечать одним словом на всю историю философии.",
+  keyTakeaways: ["Средневековье: Бог и спасение.", "Схоластика: вера и разум.", "Возрождение: человек и природа.", "Новое время: метод науки.", "Просвещение: разум и общество."],
+  visualType: "flow",
+  visualData: {
+    type: "flow",
+    title: "Маршрут семинара 2",
+    items: ["Средневековье", "Схоластика", "Возрождение", "Новое время", "Просвещение"],
   },
   knowledge: {
     definitions: requiredTopics.map((topic) => definitionsByTopic[topic]).filter(Boolean),

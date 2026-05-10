@@ -20,6 +20,28 @@
 | q4 | 13/13 | none major from extracted text | no | method contrast: Bacon vs Descartes | q4m13 | Bacon and Descartes are taught through method, idols, induction, doubt, cogito, rules, and deduction. |
 | q5 | 14/14 | Hobbes/Locke comparative detail | no | Enlightenment reason vs previous authority models | q5m14 | Nature, person, education, materialism, deism, and social contract theories are separated and compared. |
 
+## UX / Visual Audit
+
+| area | status |
+|---|---|
+| Mission screen | Rebuilt as compact learning cards instead of a single text panel. |
+| Visual blocks | 59/59 missions have `visualData`. |
+| Quick explanations | 59/59 missions have `quickExplain`. |
+| Analogies | 59/59 missions have `analogy`. |
+| Memory hooks | 59/59 missions have `memoryHook`. |
+| Oral answer | Moved to a collapsible accordion after the learning blocks. |
+| Source metadata | Kept in a compact secondary details block. |
+
+## Epoch Aesthetics
+
+| question | aesthetic | visual learning pattern |
+|---|---|---|
+| q1 | Medieval cathedral / monastery mood | God -> world -> person -> salvation -> eternity; commandments card; antiquity comparison. |
+| q2 | Scholastic university / books / ink | faith vs reason, universals table, five proofs cards. |
+| q3 | Renaissance city / workshop / sky | antiquity -> Renaissance -> human focus; nature and politics maps. |
+| q4 | New Time laboratory / instruments | scientific revolution -> method; Bacon vs Descartes; idols cards. |
+| q5 | Enlightenment salon / library / city | nature -> person -> society; deism/materialism/social contract comparisons. |
+
 ## Meta-Lesson Audit
 
 Before this pass, the lesson generator inserted meta-instructions into every mission. The generated lessons for 59 missions were affected because `buildLesson` added answer-structure prose globally.
@@ -56,6 +78,11 @@ The current validators check:
 - at least two knowledge definitions;
 - comparison/distinction in each lesson;
 - epoch context in each lesson;
+- visual block in each mission;
+- quick explanation, analogy, memory hook, and key takeaways;
+- micro-blocked lesson sections instead of a long monolith;
+- oral answer not duplicating the lesson volume;
+- source notes not leaking into the main lesson;
 - seminar question coverage;
 - notebook term coverage;
 - required topic coverage;

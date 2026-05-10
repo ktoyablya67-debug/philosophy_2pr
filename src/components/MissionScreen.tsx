@@ -6,6 +6,20 @@ import { PixelButton } from "./PixelButton";
 import { PixelScene } from "./PixelScene";
 import { ProgressBar } from "./ProgressBar";
 import { StepRenderer } from "./StepRenderer";
+import {
+  AnalogyCard,
+  CheatSheetCard,
+  ConceptCard,
+  KeyTakeawaysList,
+  MemoryHookCard,
+  MiniDiagram,
+  MissionIntroCard,
+  OralAnswerAccordion,
+  PixelSceneCard,
+  QuickTakeCard,
+  TeacherQuestionCard,
+  TrapCard,
+} from "./MissionLearningBlocks";
 
 type Props = {
   mission: LearningMission;
@@ -54,46 +68,26 @@ export function MissionScreen({ mission, quickFight, progress, setProgress, onBa
         </div>
         <ProgressBar value={percent} label="Миссия" />
         <PixelScene aesthetic={world.aesthetic} visual={world.visual} title={mission.title} />
-        <article className="lesson-panel">
-          <p className="eyebrow">{world.title}</p>
-          <h1>{mission.title}</h1>
-          <p className="scene-text">{mission.scene}</p>
+        <article className="lesson-panel mission-learning">
+          <MissionIntroCard mission={mission} />
+          <PixelSceneCard mission={mission} />
+          <MiniDiagram block={mission.visualData} />
+          <QuickTakeCard mission={mission} />
+          <ConceptCard mission={mission} />
+          <KeyTakeawaysList mission={mission} />
+          <div className="learning-two-col">
+            <AnalogyCard mission={mission} />
+            <MemoryHookCard mission={mission} />
+          </div>
+          <div className="learning-two-col">
+            <TrapCard mission={mission} />
+            <TeacherQuestionCard mission={mission} />
+          </div>
+          <CheatSheetCard mission={mission} />
+          <OralAnswerAccordion mission={mission} />
 
-          <h2>Объяснение с нуля</h2>
-          <p>{mission.lesson.simpleExplanation}</p>
-
-          <h2>Ключевые знания</h2>
-          <ul>
-            {mission.knowledge.definitions.slice(0, 5).map((item) => <li key={item}>{item}</li>)}
-          </ul>
-
-          <h2>Отличия и ловушки</h2>
-          <ul>
-            {mission.knowledge.distinctions.slice(0, 3).map((item) => <li key={item}>{item}</li>)}
-          </ul>
-
-          <h2>Ядро темы</h2>
-          <p>{mission.lesson.textbookCore}</p>
-
-          <h2>Зачем это для семинара</h2>
-          <p>{mission.lesson.whyItMatters}</p>
-
-          <div className="tag-row">{mission.lesson.keyTerms.map((term) => <span className="badge" key={term}>{term}</span>)}</div>
-
-          <details>
-            <summary>Стратегия устного ответа</summary>
-            <p>{mission.answerStrategy}</p>
-          </details>
-
-          <h2>Готовый устный ответ</h2>
-          <p>{mission.oralAnswer.short}</p>
-          <details>
-            <summary>Развёрнутый ответ на 2 минуты</summary>
-            <p>{mission.oralAnswer.expanded}</p>
-          </details>
-
-          <details>
-            <summary>Источник</summary>
+          <details className="learning-details source-details">
+            <summary>Источник и статус</summary>
             <div className="source-box">
               <span>Вопрос листка: {mission.seminarQuestionId}</span>
               <span>Учебник: {mission.sourceRefs.textbookSections.join(", ")}</span>
