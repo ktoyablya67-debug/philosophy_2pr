@@ -35,12 +35,27 @@ export type SeminarQuestion = {
   missionIds: string[];
 };
 
+export type NotebookTerm = {
+  id: string;
+  label: string;
+  assignmentPages: string[];
+  intentionallyStandalone?: boolean;
+};
+
+export type SourceRefs = {
+  textbookPages: string[];
+  textbookSections: string[];
+  assignmentQuestionIds: string[];
+  notebookTermIds: string[];
+};
+
 export type LearningMission = {
   id: string;
   worldId: string;
   seminarQuestionId: string;
   sourceStatus: "textbook_verified" | "assignment_based" | "needs_textbook_review";
   sourceNote: string;
+  sourceRefs: SourceRefs;
   title: string;
   subtitle: string;
   requiredTopics: string[];

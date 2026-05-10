@@ -57,6 +57,13 @@ export function MissionScreen({ mission, quickFight, progress, setProgress, onBa
         <article className="lesson-panel">
           <p className="eyebrow">{world.title}</p>
           <h1>{mission.title}</h1>
+          <div className="source-box">
+            <strong>Источник</strong>
+            <span>Вопрос листка: {mission.seminarQuestionId}</span>
+            <span>Учебник: {mission.sourceRefs.textbookSections.join(", ")}</span>
+            <span>Страницы: {mission.sourceRefs.textbookPages.join(", ")}</span>
+            <span>Статус: {mission.sourceStatus.replace(/_/g, " ")}</span>
+          </div>
           <p className="scene-text">{mission.scene}</p>
           <h2>Объяснение с нуля</h2>
           <p>{mission.lesson.simpleExplanation}</p>

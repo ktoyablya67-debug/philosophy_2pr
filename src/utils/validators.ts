@@ -9,7 +9,7 @@ import type {
   TrapStep,
   World,
 } from "../types";
-import { missions, requiredTopics, seminarQuestions, worlds } from "../data/gameData";
+import { missions, requiredNotebookTerms, requiredTopics, seminarQuestions, worlds } from "../data/gameData";
 
 export type CoverageRow = {
   topic: string;
@@ -31,6 +31,13 @@ export type SeminarCoverageRow = {
   hasTrap: boolean;
   hasOralAnswer: boolean;
   hasInteractiveStep: boolean;
+  status: "OK" | "WARNING";
+};
+
+export type NotebookCoverageRow = {
+  notebookTermId: string;
+  label: string;
+  missionIds: string[];
   status: "OK" | "WARNING";
 };
 
@@ -88,6 +95,18 @@ export function getSeminarCoverageRows(
       hasOralAnswer,
       hasInteractiveStep,
       status,
+    };
+  });
+}
+
+export function getNotebookCoverageRows(dataMissions: LearningMission[] = missions): NotebookCoverageRow[] {
+  return requiredNotebookTerms.map((term) => {
+    const linked = dataMissions.filter((mission) => mission.sourceRefs.notebookTermIds.includes(term.id));
+    return {
+      notebookTermId: term.id,
+      label: term.label,
+      missionIds: linked.map((mission) => mission.id),
+      status: linked.length > 0 || term.intentionallyStandalone ? "OK" : "WARNING",
     };
   });
 }
@@ -155,6 +174,14 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
       errors.push(`${mission.id}: invalid sourceStatus`);
     }
     if (!hasText(mission.sourceNote)) errors.push(`${mission.id}: missing sourceNote`);
+    if (!mission.sourceRefs) errors.push(`${mission.id}: missing sourceRefs`);
+    if (mission.id !== "m26" && mission.sourceRefs && mission.sourceRefs.notebookTermIds.length === 0) {
+      errors.push(`${mission.id}: no linked notebookTerm`);
+    }
+    if (mission.sourceStatus === "textbook_verified") {
+      if (!mission.sourceRefs || mission.sourceRefs.textbookPages.length === 0) errors.push(`${mission.id}: textbook_verified without textbookPages`);
+      if (!mission.sourceRefs || mission.sourceRefs.textbookSections.length === 0) errors.push(`${mission.id}: textbook_verified without textbookSections`);
+    }
     if (!mission.lesson || !hasText(mission.lesson.simpleExplanation) || !hasText(mission.lesson.textbookCore)) errors.push(`${mission.id}: incomplete lesson`);
     if (!hasText(mission.oralAnswer.short) || !hasText(mission.oralAnswer.expanded)) errors.push(`${mission.id}: incomplete oralAnswer`);
     mission.steps.forEach((step) => validateStep(step, errors));
@@ -167,6 +194,9 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
     if (!row.hasTrap) errors.push(`${row.seminarQuestionId}: no trap/commonMistake`);
     if (!row.hasOralAnswer) errors.push(`${row.seminarQuestionId}: no oralAnswer`);
     if (!row.hasInteractiveStep) errors.push(`${row.seminarQuestionId}: no choice/duel/argument/trap step`);
+  });
+  getNotebookCoverageRows(dataMissions).forEach((row) => {
+    if (row.status !== "OK") errors.push(`${row.notebookTermId}: notebook term is not covered`);
   });
 
   return errors;

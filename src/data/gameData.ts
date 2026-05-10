@@ -4,6 +4,7 @@ import type {
   ChoiceStep,
   DuelStep,
   LearningMission,
+  NotebookTerm,
   SeminarQuestion,
   TrapStep,
   World,
@@ -79,6 +80,30 @@ export const requiredTopics = [
   "сравнение концепций государства у Гоббса, Локка и Руссо",
 ];
 
+export const requiredNotebookTerms: NotebookTerm[] = [
+  { id: "medieval_features", label: "черты средневековой философии", assignmentPages: ["34"] },
+  { id: "universals", label: "универсалии", assignmentPages: ["35", "36"] },
+  { id: "realism", label: "реализм", assignmentPages: ["35", "36"] },
+  { id: "nominalism", label: "номинализм", assignmentPages: ["35", "36"] },
+  { id: "conceptualism", label: "концептуализм", assignmentPages: ["35", "36"] },
+  { id: "humanism", label: "гуманизм", assignmentPages: ["38", "41"] },
+  { id: "pantheism", label: "пантеизм", assignmentPages: ["38", "41"] },
+  { id: "renaissance_natural_philosophy", label: "натурфилософия", assignmentPages: ["38", "41"] },
+  { id: "anthropocentrism", label: "антропоцентризм", assignmentPages: ["38", "41"] },
+  { id: "empiricism", label: "эмпиризм", assignmentPages: ["44", "46"] },
+  { id: "rationalism", label: "рационализм", assignmentPages: ["44", "46"] },
+  { id: "bacon_idols", label: "идолы Бэкона", assignmentPages: ["44", "46"] },
+  { id: "induction", label: "индукция", assignmentPages: ["44", "46"] },
+  { id: "deduction", label: "дедукция", assignmentPages: ["44", "46"] },
+  { id: "substance", label: "субстанция", assignmentPages: ["48"] },
+  { id: "deism", label: "деизм", assignmentPages: ["48"] },
+  { id: "dualism", label: "дуализм", assignmentPages: ["48"] },
+  { id: "mechanistic_materialism", label: "механистический материализм", assignmentPages: ["48", "52"] },
+  { id: "materialism", label: "материализм", assignmentPages: ["48", "52"] },
+  { id: "atheism", label: "атеизм", assignmentPages: ["48", "52"] },
+  { id: "social_contract", label: "общественный договор", assignmentPages: ["48", "52"] },
+];
+
 type MissionSpec = {
   id: string;
   worldId: string;
@@ -94,12 +119,20 @@ type MissionSpec = {
 };
 
 function sourceStatusFor(spec: MissionSpec): LearningMission["sourceStatus"] {
-  if (spec.seminarQuestionId === "sq4" || spec.seminarQuestionId === "sq5") return "assignment_based";
+  const verified = new Set(["m01", "m07", "m08", "m09", "m12", "m13", "m14", "m15", "m16", "m17", "m18", "m19", "m20", "m21", "m22", "m23", "m24", "m25"]);
+  const assignmentOnly = new Set(["m02", "m03", "m04", "m05", "m06", "m10", "m11"]);
+  if (verified.has(spec.id)) return "textbook_verified";
+  if (assignmentOnly.has(spec.id)) return "assignment_based";
   return "needs_textbook_review";
 }
 
 function sourceNoteFor(spec: MissionSpec): string {
   const question = seminarQuestions.find((item) => item.id === spec.seminarQuestionId);
+  const status = sourceStatusFor(spec);
+  const refs = sourceRefsFor(spec);
+  if (status === "textbook_verified") {
+    return `Сверено по извлечённому тексту учебника: ${refs.textbookSections.join(", ")}, страницы ${refs.textbookPages.join(", ")}; связано с вопросом листка ${question?.number}.`;
+  }
   if (spec.seminarQuestionId === "sq4") {
     return `Основано на видимом вопросе листка задания 4: ${question?.title}. Темы: ${readableList(spec.topics)}. Требует сверки формулировок с учебником, раздел о Новом времени.`;
   }
@@ -112,14 +145,52 @@ function sourceNoteFor(spec: MissionSpec): string {
   return `Основано на списке обязательных тем и восстановленной структуре вопроса листка: ${question?.title ?? spec.title}. Требует ручной сверки с учебником и полной страницей листка.`;
 }
 
+function sourceRefsFor(spec: MissionSpec) {
+  const byMission: Record<string, { pages: string[]; sections: string[]; notebook: string[] }> = {
+    m01: { pages: ["34"], sections: ["2.2. Философия Средних веков"], notebook: ["medieval_features"] },
+    m02: { pages: ["34"], sections: ["2.2. Философия Средних веков"], notebook: ["medieval_features"] },
+    m03: { pages: ["34"], sections: ["2.2. Философия Средних веков"], notebook: ["medieval_features"] },
+    m04: { pages: ["36", "37"], sections: ["2.2. Философия Средних веков"], notebook: ["medieval_features"] },
+    m05: { pages: ["36", "37"], sections: ["2.2. Философия Средних веков"], notebook: ["medieval_features"] },
+    m06: { pages: ["34", "37", "38"], sections: ["2.2. Философия Средних веков", "2.3. Философия эпохи Возрождения"], notebook: ["medieval_features"] },
+    m07: { pages: ["35"], sections: ["2.2. Философия Средних веков"], notebook: ["universals"] },
+    m08: { pages: ["35", "36"], sections: ["2.2. Философия Средних веков"], notebook: ["universals", "realism", "nominalism", "conceptualism"] },
+    m09: { pages: ["36"], sections: ["2.2. Философия Средних веков"], notebook: ["universals", "conceptualism"] },
+    m10: { pages: ["36"], sections: ["2.2. Философия Средних веков"], notebook: ["universals"] },
+    m11: { pages: ["34", "35"], sections: ["2.2. Философия Средних веков"], notebook: ["medieval_features", "universals"] },
+    m12: { pages: ["38"], sections: ["2.3. Философия эпохи Возрождения"], notebook: ["humanism", "anthropocentrism"] },
+    m13: { pages: ["38", "39"], sections: ["2.3. Философия эпохи Возрождения"], notebook: ["humanism", "anthropocentrism"] },
+    m14: { pages: ["39", "40", "41"], sections: ["2.3. Философия эпохи Возрождения"], notebook: ["renaissance_natural_philosophy", "pantheism"] },
+    m15: { pages: ["40", "41"], sections: ["2.3. Философия эпохи Возрождения"], notebook: ["pantheism", "anthropocentrism"] },
+    m16: { pages: ["39", "41"], sections: ["2.3. Философия эпохи Возрождения"], notebook: ["humanism"] },
+    m17: { pages: ["43", "44"], sections: ["2.4. Философия Нового времени"], notebook: ["empiricism", "rationalism"] },
+    m18: { pages: ["44", "45", "46"], sections: ["2.4. Философия Нового времени"], notebook: ["empiricism", "bacon_idols", "induction"] },
+    m19: { pages: ["46", "47", "48"], sections: ["2.4. Философия Нового времени"], notebook: ["rationalism", "deduction", "substance", "deism", "dualism"] },
+    m20: { pages: ["44", "46"], sections: ["2.4. Философия Нового времени"], notebook: ["empiricism", "rationalism", "induction", "deduction"] },
+    m21: { pages: ["48", "49"], sections: ["2.5. Философия Просвещения"], notebook: ["mechanistic_materialism", "materialism", "atheism"] },
+    m22: { pages: ["48", "49", "50"], sections: ["2.5. Философия Просвещения"], notebook: ["substance", "deism", "dualism", "mechanistic_materialism", "materialism", "atheism"] },
+    m23: { pages: ["49", "51", "52"], sections: ["2.5. Философия Просвещения"], notebook: ["materialism"] },
+    m24: { pages: ["51", "52"], sections: ["2.5. Философия Просвещения"], notebook: ["social_contract"] },
+    m25: { pages: ["51", "52"], sections: ["2.5. Философия Просвещения"], notebook: ["social_contract"] },
+    m26: { pages: ["34", "52"], sections: ["2.2. Философия Средних веков", "2.3. Философия эпохи Возрождения", "2.4. Философия Нового времени", "2.5. Философия Просвещения"], notebook: requiredNotebookTerms.map((term) => term.id) },
+  };
+  const refs = byMission[spec.id] ?? { pages: [], sections: [], notebook: [] };
+  return {
+    textbookPages: refs.pages,
+    textbookSections: refs.sections,
+    assignmentQuestionIds: spec.seminarQuestionId === "sq-final" ? seminarQuestions.map((question) => question.id) : [spec.seminarQuestionId],
+    notebookTermIds: refs.notebook,
+  };
+}
+
 export const seminarQuestions: SeminarQuestion[] = [
   {
     id: "sq1",
     number: 1,
     title: "Средневековая философия",
-    source: "assignment-sheet-inferred",
+    source: "assignment-sheet",
     wording:
-      "Средневековая философия: теоцентризм, теизм, креационизм, сотериология, эсхатология; патристика и Аврелий Августин; заповеди; сравнение античного и средневекового мировоззрения.",
+      "Теоцентризм как особенность мировоззрения эпохи европейского Средневековья: теизм, креационизм, сотериология или учение о душе, эсхатология. Патристика: Аврелий Августин; спор с Пелагием; учение о времени; учение о граде земном и небесном.",
     mustKnow: [
       "объяснить, почему средневековая философия теоцентрична",
       "различать теизм, креационизм, сотериологию и эсхатологию",
@@ -133,9 +204,9 @@ export const seminarQuestions: SeminarQuestion[] = [
     id: "sq2",
     number: 2,
     title: "Схоластика",
-    source: "assignment-sheet-inferred",
+    source: "assignment-sheet",
     wording:
-      "Схоластика: проблема соотношения веры и разума; спор об универсалиях; реализм, номинализм, концептуализм; Фома Аквинский и пять доказательств бытия Бога; отличие патристики от схоластики.",
+      "Средневековая схоластика: проблема соотношения веры и разума; спор об универсалиях, реализм, номинализм; Фома Аквинский и 5 доказательств бытия Бога.",
     mustKnow: [
       "объяснить схоластический метод и роль диспута",
       "сравнить веру и разум в средневековой философии",
@@ -149,9 +220,9 @@ export const seminarQuestions: SeminarQuestion[] = [
     id: "sq3",
     number: 3,
     title: "Философия Возрождения",
-    source: "assignment-sheet-inferred",
+    source: "assignment-sheet",
     wording:
-      "Философия Возрождения: гуманизм, антропоцентризм, возрождение античности; причины появления гуманистов в Европе; натурфилософия, пантеизм, Коперник, Бруно, бесконечность Вселенной; политические проекты Макиавелли, Мора и Кампанеллы.",
+      "Гуманизм и антропоцентризм философии эпохи Возрождения: натурфилософия Возрождения; учение о Вселенной Н. Коперника; Дж. Бруно; политические учения Н. Макиавелли, Т. Мора, Т. Кампанеллы.",
     mustKnow: [
       "объяснить гуманизм и антропоцентризм не в бытовом, а в историко-философском смысле",
       "сказать, какую эпоху хотели возродить гуманисты и почему",
@@ -845,6 +916,7 @@ function createMission(spec: MissionSpec): LearningMission {
     seminarQuestionId: spec.seminarQuestionId,
     sourceStatus: sourceStatusFor(spec),
     sourceNote: sourceNoteFor(spec),
+    sourceRefs: sourceRefsFor(spec),
     title: spec.title,
     subtitle: spec.subtitle,
     requiredTopics: spec.topics,
