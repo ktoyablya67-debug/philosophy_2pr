@@ -57,27 +57,51 @@ export function MissionScreen({ mission, quickFight, progress, setProgress, onBa
         <article className="lesson-panel">
           <p className="eyebrow">{world.title}</p>
           <h1>{mission.title}</h1>
-          <div className="source-box">
-            <strong>Источник</strong>
-            <span>Вопрос листка: {mission.seminarQuestionId}</span>
-            <span>Учебник: {mission.sourceRefs.textbookSections.join(", ")}</span>
-            <span>Страницы: {mission.sourceRefs.textbookPages.join(", ")}</span>
-            <span>Статус: {mission.sourceStatus.replace(/_/g, " ")}</span>
-          </div>
           <p className="scene-text">{mission.scene}</p>
+
           <h2>Объяснение с нуля</h2>
           <p>{mission.lesson.simpleExplanation}</p>
+
+          <h2>Ключевые знания</h2>
+          <ul>
+            {mission.knowledge.definitions.slice(0, 5).map((item) => <li key={item}>{item}</li>)}
+          </ul>
+
+          <h2>Отличия и ловушки</h2>
+          <ul>
+            {mission.knowledge.distinctions.slice(0, 3).map((item) => <li key={item}>{item}</li>)}
+          </ul>
+
           <h2>Ядро темы</h2>
           <p>{mission.lesson.textbookCore}</p>
+
           <h2>Зачем это для семинара</h2>
           <p>{mission.lesson.whyItMatters}</p>
+
           <div className="tag-row">{mission.lesson.keyTerms.map((term) => <span className="badge" key={term}>{term}</span>)}</div>
+
+          <details>
+            <summary>Стратегия устного ответа</summary>
+            <p>{mission.answerStrategy}</p>
+          </details>
+
           <h2>Готовый устный ответ</h2>
           <p>{mission.oralAnswer.short}</p>
           <details>
             <summary>Развёрнутый ответ на 2 минуты</summary>
             <p>{mission.oralAnswer.expanded}</p>
           </details>
+
+          <details>
+            <summary>Источник</summary>
+            <div className="source-box">
+              <span>Вопрос листка: {mission.seminarQuestionId}</span>
+              <span>Учебник: {mission.sourceRefs.textbookSections.join(", ")}</span>
+              <span>Страницы: {mission.sourceRefs.textbookPages.join(", ")}</span>
+              <span>Статус: {mission.sourceStatus.replace(/_/g, " ")}</span>
+            </div>
+          </details>
+
           <PixelButton className="big" onClick={() => setIntroDone(true)}>Перейти к заданиям</PixelButton>
         </article>
       </section>

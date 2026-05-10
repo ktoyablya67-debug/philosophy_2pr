@@ -66,6 +66,22 @@ const weakDistractors = [
   "заменить все философские термины бытовыми примерами",
 ];
 
+const forbiddenLessonMetaPhrases = [
+  "ответ нужно строить",
+  "начинай с определения",
+  "затем раскрой",
+  "затем раскрываются",
+  "в устном ответе",
+  "используй термины",
+  "объяснение должно звучать",
+  "для закрепления произнеси",
+  "преподаватель спрашивает не отдельное слово",
+  "эта миссия нужна для вопроса",
+  "листок требует",
+  "источник verified by textbook",
+  "извлечённый текст учебника поддерживает",
+];
+
 function fullMissionText(mission: LearningMission) {
   return [
     mission.title,
@@ -226,9 +242,14 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
       if (!mission.sourceRefs || mission.sourceRefs.textbookSections.length === 0) errors.push(`${mission.id}: textbook_verified without textbookSections`);
     }
     if (!mission.lesson || !hasText(mission.lesson.simpleExplanation) || !hasText(mission.lesson.textbookCore)) errors.push(`${mission.id}: incomplete lesson`);
+    if (!mission.knowledge || mission.knowledge.definitions.length < 2) errors.push(`${mission.id}: fewer than 2 knowledge definitions`);
+    if (!hasText(mission.answerStrategy)) errors.push(`${mission.id}: missing answerStrategy`);
     const lessonText = `${mission.lesson.simpleExplanation} ${mission.lesson.textbookCore} ${mission.lesson.whyItMatters}`;
-    if (mission.id !== "qfinal" && wordCount(lessonText) < 180) errors.push(`${mission.id}: lesson shorter than 180 words`);
-    const promptTokens = mission.directAssignmentPrompt
+    if (mission.id !== "qfinal" && wordCount(lessonText) < 250) errors.push(`${mission.id}: lesson shorter than 250 words`);
+    if (mission.id !== "qfinal" && mission.assignmentSubtopic.toLowerCase().includes("итоговый ответ") && wordCount(lessonText) < 500) {
+      errors.push(`${mission.id}: final answer lesson shorter than 500 words`);
+    }
+    const promptTokens = `${mission.assignmentSubtopic} ${mission.requiredTopics.join(" ")}`
       .toLowerCase()
       .split(/[^а-яёa-z0-9]+/i)
       .filter((token) => token.length > 5);
@@ -238,6 +259,15 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
     forbiddenTemplatePhrases.forEach((phrase) => {
       if (fullMissionText(mission).includes(phrase)) errors.push(`${mission.id}: forbidden template phrase "${phrase}"`);
     });
+    forbiddenLessonMetaPhrases.forEach((phrase) => {
+      if (lessonText.toLowerCase().includes(phrase)) errors.push(`${mission.id}: meta phrase in lesson "${phrase}"`);
+    });
+    if (mission.id !== "qfinal" && !/отлич|различ|сравн|в отличие|не совпада/.test(lessonText.toLowerCase())) {
+      errors.push(`${mission.id}: lesson lacks comparison or distinction`);
+    }
+    if (mission.id !== "qfinal" && !/эпох|средневек|возрожд|нового времени|просвещ|антич/.test(lessonText.toLowerCase())) {
+      errors.push(`${mission.id}: lesson lacks epoch context`);
+    }
     if (!hasText(mission.oralAnswer.short) || !hasText(mission.oralAnswer.expanded)) errors.push(`${mission.id}: incomplete oralAnswer`);
     mission.steps.forEach((step) => validateStep(step, errors));
     validateBoss(mission.finalBossQuestion, errors);

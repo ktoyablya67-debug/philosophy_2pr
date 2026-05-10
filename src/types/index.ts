@@ -72,6 +72,15 @@ export type LearningMission = {
     whyItMatters: string;
     keyTerms: string[];
   };
+  knowledge: {
+    definitions: string[];
+    distinctions: string[];
+    examples: string[];
+    names: string[];
+    datesOrContext: string[];
+    mustRemember: string[];
+  };
+  answerStrategy: string;
   oralAnswer: {
     short: string;
     expanded: string;

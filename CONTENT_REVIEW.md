@@ -1,55 +1,57 @@
 # CONTENT REVIEW
 
-## Textbook status
+## Textbook Status
 
 PDF found: `Философия учебник издание 2022 г. (1) (1).pdf`.
 
-Python extraction could not be run on this machine because the `python` command is not installed. Text was extracted with the Node fallback script `scripts/extract_textbook_pages_node.mjs` using `pdf-parse`.
+Python extraction could not be run because the `python` command is unavailable on this machine. Text extraction was completed with the Node fallback script `scripts/extract_textbook_pages_node.mjs` using `pdf-parse`.
 
 Extracted text: `materials/extracted/textbook_chapter2_pages_34_52.txt`.
 
-Found textbook sections:
+Found textbook sections: 2.2, 2.3, 2.4, 2.5.
 
-- `2.2. Философия Средних веков`
-- `2.3. Философия эпохи Возрождения`
-- `2.4. Философия Нового времени (XVII в.) и научная революция`
-- `2.5. Философия Просвещения (XVIII в.)`
+## Content Change
 
-## What changed
+The previous revision was still too meta-instructional: many lessons explained how to arrange an answer instead of teaching the philosophy itself.
 
-The old content was too generic: many lessons were built around reusable phrasing instead of the actual seminar sheet. The new `gameData.ts` is rebuilt around the five oral questions from the assignment sheet.
+This pass separates learning layers:
 
-Current structure:
+- `lesson`: subject explanation only.
+- `knowledge`: definitions, distinctions, examples, names, context, and must-remember points.
+- `answerStrategy`: short guidance for assembling an oral answer.
+- `sourceRefs`: kept for audit and shown in a compact details block, not before the learning material.
 
-- Q1: 11 micro-missions on medieval theocentrism, patristics, Augustine, commandments, and comparison with antiquity.
-- Q2: 9 micro-missions on scholasticism, faith and reason, universals, Aquinas, and patristics vs scholasticism.
-- Q3: 11 micro-missions on Renaissance humanism, anthropocentrism, natural philosophy, Copernicus, Bruno, and politics.
-- Q4: 13 micro-missions on the scientific revolution, Bacon, idols, induction, Descartes, doubt, cogito, rules, and deduction.
-- Q5: 14 micro-missions on Enlightenment reason, nature, deism, atheism, materialism, education, and social contract theories.
+## Q1 Standard
 
-## Source status
+Q1 was rewritten as the quality benchmark:
+
+- `q1m01` now teaches the medieval worldview: God, world, person, history, soul, salvation, and comparison with antique cosmocentrism.
+- `q1m04` is the model lesson for soteriology and eschatology.
+- `q1m09` now contains the ten commandments and the commandment of love as a real moral-philosophical block.
+- `q1m10` keeps the full antiquity vs Middle Ages comparison.
+- `q1m11` contains the full subject answer for question 1.
+
+## Source Status
 
 - `textbook_verified`: 49 missions.
 - `assignment_based`: 8 missions.
 - `needs_textbook_review`: 2 missions.
 
-`textbook_verified` is used only where the extracted text supports the section/page reference. Assignment-only details remain marked honestly.
+Assignment-only details remain marked honestly where the extracted textbook text is thinner than the assignment sheet.
 
-## Needs manual textbook review
+## Quality Checks Added
 
-- Augustine on time: included from the assignment sheet and standard Augustine material, but the extracted pages did not provide enough direct text for full verification.
-- Final mixed boss: combines all assignment questions, so it has no single textbook passage.
+DataCheck now warns if a lesson:
 
-## Assignment-based items
+- contains meta phrases such as "answer should be built", "start with definition", or source-verification prose;
+- is shorter than the content-depth threshold;
+- has fewer than two definitions;
+- lacks a comparison or distinction;
+- lacks epoch context.
 
-These are required by the sheet and safe to train, but exact wording should be checked against the printed/SДО material if the teacher expects a specific formulation:
+## Still Needs Manual Review
 
-- Augustine vs Pelagius.
-- Soteriology as wording in the sheet.
-- Earthly city and heavenly city.
-- Ten Commandments and commandment of love.
-- Hobbes, Locke, and comparison of state theories where the extracted pages give less detail than the assignment demands.
-
-## Safe to study through the app
-
-The app is now aligned to the assignment sheet structure. It trains each required oral question through explanation, teacher-style questions, traps, argument assembly, and boss questions. The strongest textbook-backed blocks are scholasticism, Renaissance philosophy, Bacon and Descartes, and the main Enlightenment nature/person/society framework.
+- Augustine on time.
+- Some Augustine/Pelagius wording.
+- The exact class-expected wording for commandments and commandment of love.
+- Hobbes/Locke comparative detail if the teacher expects more than the extracted textbook gives.
