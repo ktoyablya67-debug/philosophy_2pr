@@ -1,5 +1,5 @@
 import type { ArgumentStep, BossStep, ChoiceStep, DuelStep, LearningMission, MissionStep, TrapStep, World } from "../types";
-import { missions, requiredTopics, worlds } from "../data/gameData";
+import { missions, requiredTopics, seminarQuestions, worlds } from "../data/gameData";
 
 export type CoverageRow = {
   topic: string;
@@ -97,6 +97,9 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
   dataWorlds.forEach((world) => world.missionIds.forEach((id) => !missionIds.has(id) && errors.push(`${world.id}: missionId ${id} не найден`)));
   dataMissions.forEach((mission) => {
     if (!worldIds.has(mission.worldId)) errors.push(`${mission.id}: worldId ${mission.worldId} не найден`);
+    if (mission.seminarQuestionId !== "sq-final" && !seminarQuestions.some((question) => question.id === mission.seminarQuestionId)) {
+      errors.push(`${mission.id}: seminarQuestionId ${mission.seminarQuestionId} не найден в листке задания`);
+    }
     if (!mission.lesson || !hasText(mission.lesson.simpleExplanation) || !hasText(mission.lesson.textbookCore)) errors.push(`${mission.id}: неполный lesson`);
     if (!hasText(mission.oralAnswer.short) || !hasText(mission.oralAnswer.expanded)) errors.push(`${mission.id}: неполный oralAnswer`);
     mission.steps.forEach((step) => validateStep(step, errors));

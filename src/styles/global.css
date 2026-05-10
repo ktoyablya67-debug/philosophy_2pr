@@ -110,6 +110,8 @@ main { width: min(1180px, 100%); margin: 0 auto; padding: 14px; }
 }
 .badge.danger { background: #ffb4b4; }
 .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.mission-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.assignment-card ul { padding-left: 20px; line-height: 1.55; }
 .screen-stack { display: grid; gap: 16px; }
 .world-grid, .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 .world-card { padding-bottom: 14px; }

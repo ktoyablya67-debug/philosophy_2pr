@@ -9,6 +9,7 @@ type Props = {
   progress: UserProgress;
   onContinue: () => void;
   onCampaign: () => void;
+  onAssignment: () => void;
   onQuickFight: () => void;
   onFinalBoss: () => void;
   onWeak: () => void;
@@ -16,7 +17,7 @@ type Props = {
   onData: () => void;
 };
 
-export function HomeScreen({ progress, onContinue, onCampaign, onQuickFight, onFinalBoss, onWeak, onCoverage, onData }: Props) {
+export function HomeScreen({ progress, onContinue, onCampaign, onAssignment, onQuickFight, onFinalBoss, onWeak, onCoverage, onData }: Props) {
   const mission = missions.find((item) => item.id === progress.currentMissionId) ?? missions[0];
   const world = worlds.find((item) => item.id === mission.worldId) ?? worlds[0];
   const readiness = seminarReadiness(progress);
@@ -48,6 +49,7 @@ export function HomeScreen({ progress, onContinue, onCampaign, onQuickFight, onF
         </div>
         <div className="button-grid">
           <PixelButton onClick={onCampaign}>Карта кампании</PixelButton>
+          <PixelButton onClick={onAssignment}>Вопросы листка</PixelButton>
           <PixelButton onClick={onFinalBoss}>Финальный босс</PixelButton>
           <PixelButton onClick={onWeak}>Слабые места</PixelButton>
           <PixelButton onClick={onCoverage}>Проверка покрытия</PixelButton>

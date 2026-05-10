@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { CampaignScreen } from "./components/CampaignScreen";
+import { AssignmentSheetScreen } from "./components/AssignmentSheetScreen";
 import { CoverageCheckScreen } from "./components/CoverageCheckScreen";
 import { DataCheckScreen } from "./components/DataCheckScreen";
 import { FinalBossScreen } from "./components/FinalBossScreen";
@@ -48,6 +49,7 @@ export default function App() {
           progress={progress}
           onContinue={() => openMission(progress.currentMissionId)}
           onCampaign={() => setScreen("campaign")}
+          onAssignment={() => setScreen("assignment")}
           onQuickFight={openQuickFight}
           onFinalBoss={() => setScreen("finalBoss")}
           onWeak={() => setScreen("weak")}
@@ -56,6 +58,7 @@ export default function App() {
         />
       )}
       {screen === "campaign" && <CampaignScreen progress={progress} onOpenMission={openMission} />}
+      {screen === "assignment" && <AssignmentSheetScreen onOpenMission={openMission} />}
       {screen === "mission" && (
         <MissionScreen
           mission={activeMission}

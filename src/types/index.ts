@@ -25,9 +25,20 @@ export type World = {
   visual: WorldVisual;
 };
 
+export type SeminarQuestion = {
+  id: string;
+  number: number;
+  title: string;
+  source: "assignment-sheet" | "assignment-sheet-inferred";
+  wording: string;
+  mustKnow: string[];
+  missionIds: string[];
+};
+
 export type LearningMission = {
   id: string;
   worldId: string;
+  seminarQuestionId: string;
   title: string;
   subtitle: string;
   requiredTopics: string[];
@@ -132,6 +143,7 @@ export type UserProgress = {
 export type Screen =
   | "home"
   | "campaign"
+  | "assignment"
   | "mission"
   | "weak"
   | "finalBoss"
