@@ -1,5 +1,5 @@
-import { missions, worlds } from "../data/gameData";
-import type { UserProgress } from "../types";
+import { missions, seminars, seminarQuestions, worlds } from "../data/gameData";
+import type { SeminarId, UserProgress } from "../types";
 import { levelFromXp, seminarReadiness } from "../utils/progress";
 import { PixelButton } from "./PixelButton";
 import { PixelScene } from "./PixelScene";
@@ -7,6 +7,7 @@ import { ProgressBar } from "./ProgressBar";
 
 type Props = {
   progress: UserProgress;
+  onSelectSeminar: (id: SeminarId) => void;
   onContinue: () => void;
   onCampaign: () => void;
   onAssignment: () => void;
@@ -17,9 +18,10 @@ type Props = {
   onData: () => void;
 };
 
-export function HomeScreen({ progress, onContinue, onCampaign, onAssignment, onQuickFight, onFinalBoss, onWeak, onCoverage, onData }: Props) {
+export function HomeScreen({ progress, onSelectSeminar, onContinue, onCampaign, onAssignment, onQuickFight, onFinalBoss, onWeak, onCoverage, onData }: Props) {
   const mission = missions.find((item) => item.id === progress.currentMissionId) ?? missions[0];
   const world = worlds.find((item) => item.id === mission.worldId) ?? worlds[0];
+  const selectedSeminar = seminars.find((seminar) => seminar.id === progress.selectedSeminarId) ?? seminars[0];
   const readiness = seminarReadiness(progress);
   const weak = progress.weakTopicIds.slice(0, 5);
 
@@ -28,7 +30,7 @@ export function HomeScreen({ progress, onContinue, onCampaign, onAssignment, onQ
       <div className="hero-panel">
         <PixelScene aesthetic={world.aesthetic} visual={world.visual} title={world.title} />
         <div className="hero-copy">
-          <p className="eyebrow">Семинар 2</p>
+          <p className="eyebrow">{selectedSeminar.title}</p>
           <h1>PhiloQuest</h1>
           <p>{world.keyIdea}</p>
           <div className="hero-actions">
@@ -56,6 +58,34 @@ export function HomeScreen({ progress, onContinue, onCampaign, onAssignment, onQ
           <PixelButton variant="ghost" onClick={onData}>Data Check</PixelButton>
         </div>
       </aside>
+      <section className="lesson-panel seminar-picker">
+        <p className="eyebrow">Выбери семинар</p>
+        <h2>Кампании PhiloQuest</h2>
+        <div className="card-grid">
+          {seminars.map((seminar) => {
+            const seminarMissions = missions.filter((item) => item.seminarId === seminar.id);
+            const seminarProgress = progress.progressBySeminar[seminar.id];
+            const completed = seminarProgress.completedMissionIds.length;
+            const questions = seminarQuestions.filter((question) => question.seminarId === seminar.id).length;
+            const weak = seminarProgress.weakTopicIds.length;
+            return (
+              <article className={`mini-card ${seminar.aesthetic}`} key={seminar.id}>
+                <p className="eyebrow">{seminar.id === progress.selectedSeminarId ? "выбран" : seminar.title}</p>
+                <h3>{seminar.title}</h3>
+                <p>{seminar.subtitle}</p>
+                <p>{seminar.description}</p>
+                <ProgressBar value={Math.round((completed / Math.max(1, seminarMissions.length)) * 100)} label="Прогресс" />
+                <div className="tag-row">
+                  <span className="badge">{questions} вопросов</span>
+                  <span className="badge">{seminarMissions.length} миссий</span>
+                  <span className={weak ? "badge danger" : "badge"}>{weak} слабых мест</span>
+                </div>
+                <PixelButton onClick={() => onSelectSeminar(seminar.id)}>Учить</PixelButton>
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </section>
   );
 }

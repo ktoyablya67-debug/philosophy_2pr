@@ -5,7 +5,7 @@ import { PixelButton } from "./PixelButton";
 type Props = { progress: UserProgress; onOpenMission: (id: string) => void };
 
 export function WeakSpotsScreen({ progress, onOpenMission }: Props) {
-  const weakMissions = missions.filter((mission) => mission.requiredTopics.some((topic) => progress.weakTopicIds.includes(topic)));
+  const weakMissions = missions.filter((mission) => mission.seminarId === progress.selectedSeminarId && mission.requiredTopics.some((topic) => progress.weakTopicIds.includes(topic)));
   return (
     <section className="screen-stack">
       <div className="section-head">

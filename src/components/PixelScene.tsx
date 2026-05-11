@@ -73,6 +73,32 @@ const scenes: Record<Aesthetic, JSX.Element> = {
       <rect x="118" y="84" width="18" height="18" fill="#87bde8" />
     </>
   ),
+  seminar3: (
+    <>
+      <rect x="0" y="0" width="160" height="118" fill="#14251f" />
+      <rect x="16" y="72" width="128" height="34" fill="#3f2a24" />
+      <rect x="24" y="46" width="42" height="40" fill="#f7e7bf" />
+      <rect x="30" y="52" width="30" height="4" fill="#1f2937" />
+      <rect x="30" y="62" width="24" height="4" fill="#1f2937" />
+      <rect x="82" y="34" width="54" height="42" fill="#1f2937" />
+      <rect x="88" y="42" width="40" height="5" fill="#c4a15a" />
+      <rect x="88" y="54" width="28" height="5" fill="#c4a15a" />
+      <rect x="116" y="18" width="16" height="16" fill="#f6d365" />
+      <rect x="120" y="34" width="8" height="22" fill="#b7791f" />
+      <rect x="42" y="88" width="68" height="8" fill="#6f1d2d" />
+    </>
+  ),
+  seminar7: (
+    <>
+      <rect x="0" y="0" width="160" height="118" fill="#081534" />
+      <path d="M0 88 H160 M20 0 V118 M60 0 V118 M100 0 V118 M140 0 V118" stroke="#22d3ee" strokeWidth="2" opacity=".45" />
+      <circle cx="52" cy="54" r="22" fill="none" stroke="#a5b4fc" strokeWidth="6" />
+      <rect x="92" y="34" width="34" height="34" fill="#22d3ee" opacity=".9" />
+      <polygon points="98,88 126,88 112,62" fill="#f8fafc" opacity=".9" />
+      <rect x="18" y="92" width="124" height="8" fill="#64748b" />
+      <circle cx="132" cy="22" r="7" fill="#22d3ee" />
+    </>
+  ),
   finalBoss: (
     <>
       <rect x="0" y="0" width="160" height="118" fill="#171717" />

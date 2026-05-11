@@ -387,7 +387,10 @@ tr.warn td:last-child, .error-list { color: #b91c1c; font-weight: 900; }
 .renaissance { --accent: #0d7ea8; }
 .newTime { --accent: #7dd3fc; }
 .enlightenment { --accent: #9a6a00; }
+.seminar3 { --accent: #c4a15a; }
+.seminar7 { --accent: #22d3ee; }
 .finalBoss { --accent: #ff4d5d; }
+.seminar-picker { grid-column: 1 / -1; }
 
 @media (max-width: 820px) {
   .home-grid { grid-template-columns: 1fr; }

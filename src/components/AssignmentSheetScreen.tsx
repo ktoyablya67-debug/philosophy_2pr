@@ -1,27 +1,29 @@
-import { missions, requiredNotebookTerms, seminarQuestions } from "../data/gameData";
+import { missions, requiredNotebookTerms, seminars, seminarQuestions } from "../data/gameData";
+import type { UserProgress } from "../types";
 import { PixelButton } from "./PixelButton";
 
 type Props = {
+  progress: UserProgress;
   onOpenMission: (id: string) => void;
 };
 
-export function AssignmentSheetScreen({ onOpenMission }: Props) {
+export function AssignmentSheetScreen({ progress, onOpenMission }: Props) {
+  const selectedSeminar = seminars.find((seminar) => seminar.id === progress.selectedSeminarId) ?? seminars[0];
+  const terms = requiredNotebookTerms.filter((term) => term.seminarId === progress.selectedSeminarId);
+  const questions = seminarQuestions.filter((question) => question.seminarId === progress.selectedSeminarId);
   return (
     <section className="screen-stack">
       <div className="section-head">
         <p className="eyebrow">Листок задания</p>
-        <h1>Что спросят на семинаре</h1>
-        <p>
-          Подготовка собрана вокруг пяти устных вопросов листка и терминов для тетради.
-          Страницы и разделы учебника привязаны в данных миссий.
-        </p>
+        <h1>{selectedSeminar.title}</h1>
+        <p>{selectedSeminar.description}</p>
       </div>
 
       <article className="lesson-panel">
         <h2>Что выписать в тетрадь</h2>
         <div className="card-grid compact-grid">
-          {requiredNotebookTerms.map((term) => {
-            const linked = missions.filter((mission) => mission.sourceRefs.notebookTermIds.includes(term.id));
+          {terms.length ? terms.map((term) => {
+            const linked = missions.filter((mission) => mission.seminarId === progress.selectedSeminarId && mission.sourceRefs.notebookTermIds.includes(term.id));
             return (
               <div className="mini-card" key={term.id}>
                 <p className="eyebrow">с. {term.assignmentPages.join("-")}</p>
@@ -32,13 +34,13 @@ export function AssignmentSheetScreen({ onOpenMission }: Props) {
                 </p>
               </div>
             );
-          })}
+          }) : <p>Для этого семинара отдельный блок тетрадных терминов не задан: source of truth — контрольные вопросы учебника.</p>}
         </div>
       </article>
 
       <div className="card-grid">
-        {seminarQuestions.map((question) => {
-          const linked = missions.filter((mission) => mission.seminarQuestionId === question.id);
+        {questions.map((question) => {
+          const linked = missions.filter((mission) => mission.seminarId === progress.selectedSeminarId && mission.seminarQuestionId === question.id);
           const fullAnswer = linked.find((mission) => mission.assignmentSubtopic.toLowerCase().includes("итоговый ответ"));
           const firstMission = linked[0];
           const strictMission = fullAnswer ?? firstMission;

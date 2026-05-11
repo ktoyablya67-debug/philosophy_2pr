@@ -1,4 +1,4 @@
-import { missions, worlds } from "../data/gameData";
+import { missions, seminars, worlds } from "../data/gameData";
 import type { UserProgress } from "../types";
 import { PixelButton } from "./PixelButton";
 import { PixelScene } from "./PixelScene";
@@ -10,15 +10,18 @@ type Props = {
 };
 
 export function CampaignScreen({ progress, onOpenMission }: Props) {
+  const selectedSeminar = seminars.find((seminar) => seminar.id === progress.selectedSeminarId) ?? seminars[0];
+  const seminarWorlds = worlds.filter((world) => world.seminarId === progress.selectedSeminarId);
   return (
     <section className="screen-stack">
       <div className="section-head">
         <p className="eyebrow">Карта кампании</p>
-        <h1>6 миров подготовки</h1>
+        <h1>{selectedSeminar.title}</h1>
+        <p>{selectedSeminar.subtitle}</p>
       </div>
       <div className="world-grid">
-        {worlds.map((world) => {
-          const worldMissions = world.missionIds.map((id) => missions.find((mission) => mission.id === id)).filter(Boolean);
+        {seminarWorlds.map((world) => {
+          const worldMissions = world.missionIds.map((id) => missions.find((mission) => mission.id === id && mission.seminarId === progress.selectedSeminarId)).filter(Boolean);
           const completed = worldMissions.filter((mission) => progress.completedMissionIds.includes(mission!.id)).length;
           return (
             <article className={`world-card ${world.aesthetic}`} key={world.id}>

@@ -1,15 +1,18 @@
 import { missions } from "../data/gameData";
 import { getCoverageRows, getNotebookCoverageRows, getSeminarCoverageRows } from "../utils/validators";
+import type { SeminarId } from "../types";
 
-export function CoverageCheckScreen() {
-  const topicRows = getCoverageRows();
-  const seminarRows = getSeminarCoverageRows();
-  const notebookRows = getNotebookCoverageRows();
+type Props = { seminarId?: SeminarId };
+
+export function CoverageCheckScreen({ seminarId }: Props) {
+  const topicRows = getCoverageRows(seminarId);
+  const seminarRows = getSeminarCoverageRows(undefined, undefined, seminarId);
+  const notebookRows = getNotebookCoverageRows(undefined, seminarId);
   const warnings = topicRows.filter((row) => row.status === "WARNING").length + seminarRows.filter((row) => row.status === "WARNING").length + notebookRows.filter((row) => row.status === "WARNING").length;
   const sourceStats = {
-    textbook: missions.filter((mission) => mission.sourceStatus === "textbook_verified").length,
-    assignment: missions.filter((mission) => mission.sourceStatus === "assignment_based").length,
-    review: missions.filter((mission) => mission.sourceStatus === "needs_textbook_review").length,
+    textbook: missions.filter((mission) => (!seminarId || mission.seminarId === seminarId) && mission.sourceStatus === "textbook_verified").length,
+    assignment: missions.filter((mission) => (!seminarId || mission.seminarId === seminarId) && mission.sourceStatus === "assignment_based").length,
+    review: missions.filter((mission) => (!seminarId || mission.seminarId === seminarId) && mission.sourceStatus === "needs_textbook_review").length,
   };
   return (
     <section className="screen-stack">

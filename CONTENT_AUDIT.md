@@ -20,6 +20,31 @@
 | q4 | 13/13 | none major from extracted text | no | method contrast: Bacon vs Descartes | q4m13 | Bacon and Descartes are taught through method, idols, induction, doubt, cogito, rules, and deduction. |
 | q5 | 14/14 | Hobbes/Locke comparative detail | no | Enlightenment reason vs previous authority models | q5m14 | Nature, person, education, materialism, deism, and social contract theories are separated and compared. |
 
+## Multi-Seminar Audit
+
+| seminar | questions | notebookTerms | missions | textbook_verified | assignment_based | needs_review |
+|---|---:|---:|---:|---:|---:|---:|
+| Seminar 2 | 5 | 21 | 59 | 49 | 8 | 2 |
+| Seminar 3 | 7 | 6 | 48 | 0 | 48 | 0 |
+| Seminar 7 | 3 chapter blocks / 29 control questions | 0 | 32 | 32 | 0 | 0 |
+
+Seminar 3 questions:
+
+- s3q1: Kant critical philosophy and theory of knowledge.
+- s3q2: Kant ethics and categorical imperative.
+- s3q3: Hegel, Absolute Idea, system and dialectic.
+- s3q4: Marx and Engels, materialist understanding of history.
+- s3q5: Schopenhauer and Nietzsche, irrationalism.
+- s3q6: Freud, Jung, Fromm and the unconscious.
+- s3q7: contemporary Western philosophy.
+
+Seminar 7 extraction:
+
+- Chapter 4 control questions found on pages 117-118: 8 questions.
+- Chapter 5 control questions found on page 134: 8 questions.
+- Chapter 7 control questions found on page 187: 13 questions.
+- Missions are linked to the extracted chapter control-question blocks and marked `textbook_verified`.
+
 ## UX / Visual Audit
 
 | area | status |

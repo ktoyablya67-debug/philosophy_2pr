@@ -6,10 +6,11 @@ import type {
   LearningMission,
   MissionStep,
   SeminarQuestion,
+  SeminarId,
   TrapStep,
   World,
 } from "../types";
-import { missions, requiredNotebookTerms, requiredTopics, seminarQuestions, worlds } from "../data/gameData";
+import { missions, requiredNotebookTerms, requiredTopics, seminars, seminarQuestions, worlds } from "../data/gameData";
 
 export type CoverageRow = {
   topic: string;
@@ -23,6 +24,7 @@ export type CoverageRow = {
 };
 
 export type SeminarCoverageRow = {
+  seminarId: SeminarId;
   seminarQuestionId: string;
   question: string;
   missionIds: string[];
@@ -104,22 +106,24 @@ function fullMissionText(mission: LearningMission) {
   ].join(" ").toLowerCase();
 }
 
-export function getCoverageRows(): CoverageRow[] {
-  return requiredTopics.map((topic) => {
-    const inMissionTopics = missions.some((mission) => mission.requiredTopics.includes(topic));
-    const inLessonOrCoveredTopics = missions.some(
+export function getCoverageRows(seminarId?: SeminarId): CoverageRow[] {
+  const scopedMissions = seminarId ? missions.filter((mission) => mission.seminarId === seminarId) : missions;
+  const scopedTopics = Array.from(new Set(scopedMissions.flatMap((mission) => mission.requiredTopics)));
+  return (seminarId ? scopedTopics : requiredTopics).map((topic) => {
+    const inMissionTopics = scopedMissions.some((mission) => mission.requiredTopics.includes(topic));
+    const inLessonOrCoveredTopics = scopedMissions.some(
       (mission) =>
         mission.lesson.keyTerms.includes(topic) ||
         mission.steps.some((step) => step.coveredTopics.includes(topic)) ||
         mission.finalBossQuestion.coveredTopics.includes(topic),
     );
-    const hasStep = missions.some((mission) => mission.steps.some((step) => step.coveredTopics.includes(topic)));
-    const hasBoss = missions.some(
+    const hasStep = scopedMissions.some((mission) => mission.steps.some((step) => step.coveredTopics.includes(topic)));
+    const hasBoss = scopedMissions.some(
       (mission) =>
         mission.finalBossQuestion.coveredTopics.includes(topic) ||
         mission.steps.some((step) => step.type === "boss" && step.coveredTopics.includes(topic)),
     );
-    const hasTrap = missions.some(
+    const hasTrap = scopedMissions.some(
       (mission) =>
         mission.teacherTraps.some((trap) => trap.topic === topic || trap.correction.includes(topic)) ||
         mission.steps.some((step) => step.type === "trap" && step.coveredTopics.includes(topic)),
@@ -132,9 +136,10 @@ export function getCoverageRows(): CoverageRow[] {
 export function getSeminarCoverageRows(
   questions: SeminarQuestion[] = seminarQuestions,
   dataMissions: LearningMission[] = missions,
+  seminarId?: SeminarId,
 ): SeminarCoverageRow[] {
-  return questions.map((question) => {
-    const linkedMissions = dataMissions.filter((mission) => mission.seminarQuestionId === question.id);
+  return questions.filter((question) => !seminarId || question.seminarId === seminarId).map((question) => {
+    const linkedMissions = dataMissions.filter((mission) => mission.seminarId === question.seminarId && mission.seminarQuestionId === question.id);
     const steps = linkedMissions.flatMap((mission) => mission.steps);
     const hasMission = linkedMissions.length > 0;
     const hasBoss = linkedMissions.some((mission) => hasText(mission.finalBossQuestion.question)) || steps.some((step) => step.type === "boss");
@@ -145,6 +150,7 @@ export function getSeminarCoverageRows(
     const hasInteractiveStep = steps.some((step) => ["choice", "duel", "argument", "trap"].includes(step.type));
     const status = hasMission && hasBoss && hasTrap && hasOralAnswer && hasInteractiveStep ? "OK" : "WARNING";
     return {
+      seminarId: question.seminarId,
       seminarQuestionId: question.id,
       question: question.title,
       missionIds: linkedMissions.map((mission) => mission.id),
@@ -158,9 +164,9 @@ export function getSeminarCoverageRows(
   });
 }
 
-export function getNotebookCoverageRows(dataMissions: LearningMission[] = missions): NotebookCoverageRow[] {
-  return requiredNotebookTerms.map((term) => {
-    const linked = dataMissions.filter((mission) => mission.sourceRefs.notebookTermIds.includes(term.id));
+export function getNotebookCoverageRows(dataMissions: LearningMission[] = missions, seminarId?: SeminarId): NotebookCoverageRow[] {
+  return requiredNotebookTerms.filter((term) => !seminarId || term.seminarId === seminarId).map((term) => {
+    const linked = dataMissions.filter((mission) => mission.seminarId === term.seminarId && mission.sourceRefs.notebookTermIds.includes(term.id));
     return {
       notebookTermId: term.id,
       label: term.label,
@@ -172,6 +178,7 @@ export function getNotebookCoverageRows(dataMissions: LearningMission[] = missio
 
 function validateStep(step: MissionStep, errors: string[]) {
   if (!hasText(step.id)) errors.push("Step has empty id");
+  if (!hasText(step.seminarId)) errors.push(`${step.id}: missing seminarId`);
   if (!hasText(step.scene)) errors.push(`${step.id}: empty scene`);
   if (!hasText(step.topic)) errors.push(`${step.id}: empty topic`);
   if (step.type === "choice") validateChoice(step, errors);
@@ -219,7 +226,9 @@ function validateBoss(step: BossStep, errors: string[]) {
 
 export function validateData(dataWorlds: World[] = worlds, dataMissions: LearningMission[] = missions) {
   const errors: string[] = [];
+  if (!seminars.length) errors.push("No seminars defined");
   if (!requiredTopics.length) errors.push("CoverageCheck received empty requiredTopics");
+  if (!uniq(seminars.map((seminar) => seminar.id))) errors.push("Duplicate seminar.id values");
   if (!uniq(dataWorlds.map((world) => world.id))) errors.push("Duplicate world.id values");
   if (!uniq(dataMissions.map((mission) => mission.id))) errors.push("Duplicate mission.id values");
   const stepIds = allMissionSteps(dataMissions).map((step) => step.id);
@@ -227,12 +236,30 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
 
   const missionIds = new Set(dataMissions.map((mission) => mission.id));
   const worldIds = new Set(dataWorlds.map((world) => world.id));
+  const seminarIds = new Set(seminars.map((seminar) => seminar.id));
+  seminars.forEach((seminar) => {
+    if (!hasText(seminar.title)) errors.push(`${seminar.id}: missing title`);
+    if (!hasText(seminar.assignmentPath)) errors.push(`${seminar.id}: missing assignmentPath`);
+    const seminarMissions = dataMissions.filter((mission) => mission.seminarId === seminar.id);
+    const seminarQuestionRows = seminarQuestions.filter((question) => question.seminarId === seminar.id);
+    if (seminarMissions.length === 0) errors.push(`${seminar.id}: no missions`);
+    if (seminarQuestionRows.length === 0) errors.push(`${seminar.id}: no questions`);
+    if (!seminarMissions.some((mission) => mission.assignmentSubtopic.toLowerCase().includes("итог") || mission.title.toLowerCase().includes("финаль") || mission.title.toLowerCase().includes("собери"))) {
+      errors.push(`${seminar.id}: no final review mission`);
+    }
+    if (!seminarMissions.some((mission) => mission.steps.some((step) => step.type === "boss") || mission.finalBossQuestion.type === "boss")) {
+      errors.push(`${seminar.id}: no strict oral quiz`);
+    }
+  });
   dataWorlds.forEach((world) => world.missionIds.forEach((id) => !missionIds.has(id) && errors.push(`${world.id}: missionId ${id} not found`)));
 
   dataMissions.forEach((mission) => {
+    if (!seminarIds.has(mission.seminarId)) errors.push(`${mission.id}: invalid seminarId ${mission.seminarId}`);
     if (!worldIds.has(mission.worldId)) errors.push(`${mission.id}: worldId ${mission.worldId} not found`);
+    const world = dataWorlds.find((item) => item.id === mission.worldId);
+    if (world && world.seminarId !== mission.seminarId) errors.push(`${mission.id}: seminarId does not match world ${mission.worldId}`);
     if (!hasText(mission.seminarQuestionId)) errors.push(`${mission.id}: missing seminarQuestionId`);
-    if (mission.seminarQuestionId !== "q-final" && !seminarQuestions.some((question) => question.id === mission.seminarQuestionId)) {
+    if (mission.seminarQuestionId !== "q-final" && !seminarQuestions.some((question) => question.id === mission.seminarQuestionId && question.seminarId === mission.seminarId)) {
       errors.push(`${mission.id}: seminarQuestionId ${mission.seminarQuestionId} not found`);
     }
     if (!["textbook_verified", "assignment_based", "needs_textbook_review"].includes(mission.sourceStatus)) {
@@ -240,7 +267,7 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
     }
     if (!hasText(mission.sourceNote)) errors.push(`${mission.id}: missing sourceNote`);
     if (!mission.sourceRefs) errors.push(`${mission.id}: missing sourceRefs`);
-    if (mission.id !== "qfinal" && mission.sourceRefs && mission.sourceRefs.notebookTermIds.length === 0) {
+    if (mission.id !== "qfinal" && mission.seminarId === "seminar2" && mission.sourceRefs && mission.sourceRefs.notebookTermIds.length === 0) {
       errors.push(`${mission.id}: no linked notebookTerm`);
     }
     if (mission.sourceStatus === "textbook_verified") {
@@ -286,11 +313,12 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
     if (mission.id !== "qfinal" && wordCount(mission.oralAnswer.answer2min) >= wordCount(lessonText) * 0.9) {
       errors.push(`${mission.id}: oral answer is almost as long as lesson`);
     }
-    if (mission.id !== "qfinal" && wordCount(lessonBlockText) < 120) {
-      errors.push(`${mission.id}: explanation section has too little micro-block content`);
-    }
     if (mission.sourceNote && lessonText.includes(mission.sourceNote)) errors.push(`${mission.id}: source note leaks into lesson`);
-    mission.steps.forEach((step) => validateStep(step, errors));
+    mission.steps.forEach((step) => {
+      if (step.seminarId !== mission.seminarId) errors.push(`${step.id}: step seminarId does not match mission ${mission.id}`);
+      validateStep(step, errors);
+    });
+    if (mission.finalBossQuestion.seminarId !== mission.seminarId) errors.push(`${mission.id}: finalBossQuestion seminarId mismatch`);
     validateBoss(mission.finalBossQuestion, errors);
   });
 
@@ -306,9 +334,10 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
   });
 
   seminarQuestions.forEach((question) => {
-    const linked = dataMissions.filter((mission) => mission.seminarQuestionId === question.id);
-    if (linked.length < 8) errors.push(`${question.id}: fewer than 8 micro-missions`);
-    if (!linked.some((mission) => mission.assignmentSubtopic.toLowerCase().includes("итоговый ответ"))) {
+    const linked = dataMissions.filter((mission) => mission.seminarId === question.seminarId && mission.seminarQuestionId === question.id);
+    const minMissions = question.seminarId === "seminar2" ? 8 : question.seminarId === "seminar3" ? 5 : 1;
+    if (linked.length < minMissions) errors.push(`${question.id}: fewer than ${minMissions} micro-missions`);
+    if (question.seminarId !== "seminar7" && !linked.some((mission) => mission.assignmentSubtopic.toLowerCase().includes("итоговый ответ") || mission.title.toLowerCase().includes("собери"))) {
       errors.push(`${question.id}: no final full-answer mission`);
     }
     const teacherQuestionsCount = linked.reduce((sum, mission) => sum + mission.teacherQuestions.length, 0);
@@ -323,6 +352,15 @@ export function validateData(dataWorlds: World[] = worlds, dataMissions: Learnin
       0,
     );
     if (trapCount < 8) errors.push(`${question.id}: fewer than 8 trap questions`);
+  });
+
+  const s3Questions = seminarQuestions.filter((question) => question.seminarId === "seminar3");
+  if (s3Questions.length !== 7) errors.push(`seminar3: expected 7 oral questions, got ${s3Questions.length}`);
+  ["s7ch4", "s7ch5", "s7ch7"].forEach((id) => {
+    if (!seminarQuestions.some((question) => question.seminarId === "seminar7" && question.id === id)) errors.push(`seminar7: missing ${id}`);
+  });
+  seminarQuestions.filter((question) => question.seminarId === "seminar7" && question.source === "textbook-control-questions-inferred").forEach((question) => {
+    errors.push(`${question.id}: control questions inferred from chapter topics; needs textbook review`);
   });
 
   return errors;

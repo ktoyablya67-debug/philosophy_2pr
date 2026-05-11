@@ -34,6 +34,25 @@ The mission screen was also changed from a long text panel into a set of small l
 
 The oral answer is now in an accordion, so the primary screen teaches the material first and only then shows seminar phrasing.
 
+## Seminar 3 And 7
+
+This pass adds multi-seminar support:
+
+- Seminar 2 remains intact and is tagged as `seminar2`.
+- Seminar 3 is added from `materials/assignment/seminar3_assignment.md` with 7 oral questions, 6 notebook terms, and 48 missions.
+- Seminar 7 is added from textbook control questions after chapters 4, 5, and 7 with 29 extracted control questions grouped into 3 chapter blocks and 32 missions.
+- Progress, weak spots, campaign, assignment sheet, quick fight, coverage, and final boss are filtered by `selectedSeminarId`.
+
+Source status:
+
+- Seminar 3 is `assignment_based`: the assignment is the direct source of truth, with extracted textbook ranges available for review.
+- Seminar 7 is `textbook_verified`: control-question headings and question lists were extracted from the PDF through the Node fallback because Python is not installed locally.
+
+Manual review still useful:
+
+- Seminar 3 wording can be tightened against the extracted textbook pages.
+- Seminar 7 missions are grouped around extracted control questions, but the pedagogical explanations should be reviewed after classroom feedback.
+
 ## Q1 Standard
 
 Q1 was rewritten as the quality benchmark:

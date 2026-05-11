@@ -7,6 +7,8 @@ import type {
   SeminarQuestion,
   World,
 } from "../types";
+import { seminar3, seminar3Missions, seminar3NotebookTerms, seminar3Questions, seminar3Worlds } from "./seminar3Data";
+import { seminar7, seminar7Missions, seminar7Questions, seminar7Worlds } from "./seminar7Data";
 
 type QuestionId = "q1" | "q2" | "q3" | "q4" | "q5";
 type MissionStatus = LearningMission["sourceStatus"];
@@ -124,32 +126,33 @@ export const requiredTopics = [
 ];
 
 export const requiredNotebookTerms: NotebookTerm[] = [
-  { id: "medieval_features", label: "Черты средневековой философии", assignmentPages: ["34"], shortMeaning: "теоцентризм, монотеизм, креационизм, провиденциализм и эсхатологическая направленность" },
-  { id: "universals", label: "Универсалии", assignmentPages: ["35", "36"], shortMeaning: "общие понятия, вокруг которых спорят реалисты, номиналисты и концептуалисты" },
-  { id: "realism", label: "Реализм", assignmentPages: ["35", "36"], shortMeaning: "позиция, признающая реальное существование общего" },
-  { id: "nominalism", label: "Номинализм", assignmentPages: ["35", "36"], shortMeaning: "позиция, по которой общее является именем для единичных вещей" },
-  { id: "conceptualism", label: "Концептуализм", assignmentPages: ["35", "36"], shortMeaning: "позиция, по которой общее существует как понятие в уме" },
-  { id: "humanism", label: "Гуманизм", assignmentPages: ["38", "39"], shortMeaning: "интерес к человеку, образованию, достоинству и античному наследию" },
-  { id: "pantheism", label: "Пантеизм", assignmentPages: ["40", "41"], shortMeaning: "сближение Бога и природы, характерное для части натурфилософии Возрождения" },
-  { id: "natural_philosophy", label: "Натурфилософия", assignmentPages: ["40", "41"], shortMeaning: "философское осмысление природы как живого и закономерного целого" },
-  { id: "anthropocentrism", label: "Антропоцентризм", assignmentPages: ["38", "41"], shortMeaning: "смещение внимания к человеку, его достоинству, творчеству и земной жизни" },
-  { id: "empiricism", label: "Эмпиризм", assignmentPages: ["44", "45"], shortMeaning: "ориентация на опыт как источник знания" },
-  { id: "rationalism", label: "Рационализм", assignmentPages: ["45", "46"], shortMeaning: "ориентация на разум как источник достоверного знания" },
-  { id: "bacon_idols", label: "Идолы Бэкона", assignmentPages: ["44", "45"], shortMeaning: "устойчивые заблуждения, мешающие познанию природы" },
-  { id: "induction", label: "Индукция", assignmentPages: ["44", "45"], shortMeaning: "переход от частных наблюдений к общему выводу" },
-  { id: "deduction", label: "Дедукция", assignmentPages: ["45", "46"], shortMeaning: "выведение частных следствий из общих ясных принципов" },
-  { id: "substance", label: "Субстанция", assignmentPages: ["48"], shortMeaning: "то, что существует самостоятельно и лежит в основании свойств" },
-  { id: "deism", label: "Деизм", assignmentPages: ["48"], shortMeaning: "Бог как первопричина мира, который далее развивается по естественным законам" },
-  { id: "dualism", label: "Дуализм", assignmentPages: ["48"], shortMeaning: "признание двух самостоятельных начал, например мыслящего и протяжённого" },
-  { id: "mechanistic_materialism", label: "Механистический материализм", assignmentPages: ["48", "50"], shortMeaning: "объяснение природы как механизма, действующего по законам движения" },
-  { id: "materialism", label: "Материализм", assignmentPages: ["48", "50"], shortMeaning: "понимание материи как основы реальности" },
-  { id: "atheism", label: "Атеизм", assignmentPages: ["48", "50"], shortMeaning: "отрицание существования Бога как объяснительного основания мира" },
-  { id: "social_contract", label: "Общественный договор", assignmentPages: ["52"], shortMeaning: "объяснение государства через соглашение людей о власти и правилах совместной жизни" },
+  { id: "medieval_features", seminarId: "seminar2", label: "Черты средневековой философии", assignmentPages: ["34"], shortMeaning: "теоцентризм, монотеизм, креационизм, провиденциализм и эсхатологическая направленность" },
+  { id: "universals", seminarId: "seminar2", label: "Универсалии", assignmentPages: ["35", "36"], shortMeaning: "общие понятия, вокруг которых спорят реалисты, номиналисты и концептуалисты" },
+  { id: "realism", seminarId: "seminar2", label: "Реализм", assignmentPages: ["35", "36"], shortMeaning: "позиция, признающая реальное существование общего" },
+  { id: "nominalism", seminarId: "seminar2", label: "Номинализм", assignmentPages: ["35", "36"], shortMeaning: "позиция, по которой общее является именем для единичных вещей" },
+  { id: "conceptualism", seminarId: "seminar2", label: "Концептуализм", assignmentPages: ["35", "36"], shortMeaning: "позиция, по которой общее существует как понятие в уме" },
+  { id: "humanism", seminarId: "seminar2", label: "Гуманизм", assignmentPages: ["38", "39"], shortMeaning: "интерес к человеку, образованию, достоинству и античному наследию" },
+  { id: "pantheism", seminarId: "seminar2", label: "Пантеизм", assignmentPages: ["40", "41"], shortMeaning: "сближение Бога и природы, характерное для части натурфилософии Возрождения" },
+  { id: "natural_philosophy", seminarId: "seminar2", label: "Натурфилософия", assignmentPages: ["40", "41"], shortMeaning: "философское осмысление природы как живого и закономерного целого" },
+  { id: "anthropocentrism", seminarId: "seminar2", label: "Антропоцентризм", assignmentPages: ["38", "41"], shortMeaning: "смещение внимания к человеку, его достоинству, творчеству и земной жизни" },
+  { id: "empiricism", seminarId: "seminar2", label: "Эмпиризм", assignmentPages: ["44", "45"], shortMeaning: "ориентация на опыт как источник знания" },
+  { id: "rationalism", seminarId: "seminar2", label: "Рационализм", assignmentPages: ["45", "46"], shortMeaning: "ориентация на разум как источник достоверного знания" },
+  { id: "bacon_idols", seminarId: "seminar2", label: "Идолы Бэкона", assignmentPages: ["44", "45"], shortMeaning: "устойчивые заблуждения, мешающие познанию природы" },
+  { id: "induction", seminarId: "seminar2", label: "Индукция", assignmentPages: ["44", "45"], shortMeaning: "переход от частных наблюдений к общему выводу" },
+  { id: "deduction", seminarId: "seminar2", label: "Дедукция", assignmentPages: ["45", "46"], shortMeaning: "выведение частных следствий из общих ясных принципов" },
+  { id: "substance", seminarId: "seminar2", label: "Субстанция", assignmentPages: ["48"], shortMeaning: "то, что существует самостоятельно и лежит в основании свойств" },
+  { id: "deism", seminarId: "seminar2", label: "Деизм", assignmentPages: ["48"], shortMeaning: "Бог как первопричина мира, который далее развивается по естественным законам" },
+  { id: "dualism", seminarId: "seminar2", label: "Дуализм", assignmentPages: ["48"], shortMeaning: "признание двух самостоятельных начал, например мыслящего и протяжённого" },
+  { id: "mechanistic_materialism", seminarId: "seminar2", label: "Механистический материализм", assignmentPages: ["48", "50"], shortMeaning: "объяснение природы как механизма, действующего по законам движения" },
+  { id: "materialism", seminarId: "seminar2", label: "Материализм", assignmentPages: ["48", "50"], shortMeaning: "понимание материи как основы реальности" },
+  { id: "atheism", seminarId: "seminar2", label: "Атеизм", assignmentPages: ["48", "50"], shortMeaning: "отрицание существования Бога как объяснительного основания мира" },
+  { id: "social_contract", seminarId: "seminar2", label: "Общественный договор", assignmentPages: ["52"], shortMeaning: "объяснение государства через соглашение людей о власти и правилах совместной жизни" },
 ];
 
 export const seminarQuestions: SeminarQuestion[] = [
   {
     id: "q1",
+    seminarId: "seminar2",
     number: 1,
     title: "Средневековье: теоцентризм, патристика, Августин",
     source: "assignment-sheet",
@@ -161,6 +164,7 @@ export const seminarQuestions: SeminarQuestion[] = [
   },
   {
     id: "q2",
+    seminarId: "seminar2",
     number: 2,
     title: "Схоластика: вера, разум, универсалии, Фома Аквинский",
     source: "assignment-sheet",
@@ -172,6 +176,7 @@ export const seminarQuestions: SeminarQuestion[] = [
   },
   {
     id: "q3",
+    seminarId: "seminar2",
     number: 3,
     title: "Возрождение: гуманизм, антропоцентризм, природа, политика",
     source: "assignment-sheet",
@@ -183,6 +188,7 @@ export const seminarQuestions: SeminarQuestion[] = [
   },
   {
     id: "q4",
+    seminarId: "seminar2",
     number: 4,
     title: "Новое время: научная революция, Бэкон, Декарт",
     source: "assignment-sheet",
@@ -194,6 +200,7 @@ export const seminarQuestions: SeminarQuestion[] = [
   },
   {
     id: "q5",
+    seminarId: "seminar2",
     number: 5,
     title: "Просвещение: разум, природа, человек, общественный договор",
     source: "assignment-sheet",
@@ -716,6 +723,7 @@ function bossStep(specItem: MissionSpec, suffix: string, question = specItem.fol
   return {
     id: `${specItem.id}-boss-${suffix}`,
     type: "boss",
+    seminarId: "seminar2",
     topic: specItem.assignmentSubtopic,
     coveredTopics: specItem.topics,
     scene: `Строгий опрос: ${specItem.assignmentSubtopic}.`,
@@ -733,6 +741,7 @@ function buildSteps(specItem: MissionSpec): MissionStep[] {
     {
       id: `${specItem.id}-choice`,
       type: "choice",
+      seminarId: "seminar2",
       topic: specItem.assignmentSubtopic,
       coveredTopics: specItem.topics,
       scene: "Проверка понимания после объяснения.",
@@ -746,6 +755,7 @@ function buildSteps(specItem: MissionSpec): MissionStep[] {
     {
       id: `${specItem.id}-duel`,
       type: "duel",
+      seminarId: "seminar2",
       topic: specItem.assignmentSubtopic,
       coveredTopics: specItem.topics,
       scene: "Дуэль позиций: выбери точное различие.",
@@ -759,6 +769,7 @@ function buildSteps(specItem: MissionSpec): MissionStep[] {
     {
       id: `${specItem.id}-trap`,
       type: "trap",
+      seminarId: "seminar2",
       topic: specItem.assignmentSubtopic,
       coveredTopics: specItem.topics,
       scene: "Ловушка преподавателя: исправь типичную ошибку.",
@@ -776,6 +787,7 @@ function buildSteps(specItem: MissionSpec): MissionStep[] {
     {
       id: `${specItem.id}-argument`,
       type: "argument",
+      seminarId: "seminar2",
       topic: specItem.assignmentSubtopic,
       coveredTopics: specItem.topics,
       scene: "Сборка устного ответа без drag-and-drop.",
@@ -798,6 +810,7 @@ function missionFromSpec(specItem: MissionSpec): LearningMission {
   const title = specItem.id === "q1m01" ? "Картина мира Средневековья: Бог, мир и человек" : specItem.title;
   return {
     id: specItem.id,
+    seminarId: "seminar2",
     worldId: specItem.worldId,
     seminarQuestionId: specItem.q,
     assignmentQuestionId: specItem.q,
@@ -849,6 +862,7 @@ function missionFromSpec(specItem: MissionSpec): LearningMission {
 
 const finalMission: LearningMission = {
   id: "qfinal",
+  seminarId: "seminar2",
   worldId: "w6",
   seminarQuestionId: "q-final",
   assignmentQuestionId: "q-final",
@@ -914,6 +928,7 @@ const finalMission: LearningMission = {
     .map((question, index) => ({
       id: `qfinal-boss-${index + 1}`,
       type: "boss" as const,
+      seminarId: "seminar2" as const,
       topic: "финальный опрос",
       coveredTopics: requiredTopics,
       scene: "Финальный boss fight.",
@@ -927,6 +942,7 @@ const finalMission: LearningMission = {
   finalBossQuestion: {
     id: "qfinal-final",
     type: "boss",
+    seminarId: "seminar2",
     topic: "финальный опрос",
     coveredTopics: requiredTopics,
     scene: "Последний вопрос перед семинаром.",
@@ -939,15 +955,36 @@ const finalMission: LearningMission = {
   },
 };
 
-export const missions: LearningMission[] = [...missionSpecs.map(missionFromSpec), finalMission];
+const seminar2Missions: LearningMission[] = [...missionSpecs.map(missionFromSpec), finalMission];
+export const missions: LearningMission[] = [...seminar2Missions, ...seminar3Missions, ...seminar7Missions];
 
 seminarQuestions.forEach((question) => {
-  question.missionIds = missions.filter((mission) => mission.seminarQuestionId === question.id).map((mission) => mission.id);
+  question.missionIds = seminar2Missions.filter((mission) => mission.seminarQuestionId === question.id).map((mission) => mission.id);
 });
+seminarQuestions.push(...seminar3Questions, ...seminar7Questions);
+requiredNotebookTerms.push(...seminar3NotebookTerms);
+requiredTopics.push(...Array.from(new Set([...seminar3Missions, ...seminar7Missions].flatMap((mission) => mission.requiredTopics))).filter((topic) => !requiredTopics.includes(topic)));
+
+export const seminars = [
+  {
+    id: "seminar2" as const,
+    title: "Семинар 2",
+    subtitle: "Средневековье, Возрождение, Новое время, Просвещение",
+    description: "Игровая подготовка по листку преподавателя: пять вопросов, термины для тетради и финальный опрос.",
+    textbookRanges: ["Глава 2, стр. 34-52"],
+    assignmentPath: "materials/assignment/seminar2_assignment_questions.md",
+    questionIds: seminarQuestions.filter((question) => question.seminarId === "seminar2").map((question) => question.id),
+    notebookTermIds: requiredNotebookTerms.filter((term) => term.seminarId === "seminar2").map((term) => term.id),
+    aesthetic: "medieval" as const,
+  },
+  seminar3,
+  seminar7,
+];
 
 export const worlds: World[] = [
   {
     id: "w1",
+    seminarId: "seminar2",
     title: "Тёмный собор Средневековья",
     subtitle: "Q1: теоцентризм и Августин",
     description: "Глава подготовки к первому вопросу листка.",
@@ -958,6 +995,7 @@ export const worlds: World[] = [
   },
   {
     id: "w2",
+    seminarId: "seminar2",
     title: "Башня схоластов",
     subtitle: "Q2: вера, разум, универсалии",
     description: "Глава подготовки ко второму вопросу листка.",
@@ -968,6 +1006,7 @@ export const worlds: World[] = [
   },
   {
     id: "w3",
+    seminarId: "seminar2",
     title: "Город Возрождения",
     subtitle: "Q3: человек, природа, политика",
     description: "Глава подготовки к третьему вопросу листка.",
@@ -978,6 +1017,7 @@ export const worlds: World[] = [
   },
   {
     id: "w4",
+    seminarId: "seminar2",
     title: "Лаборатория Нового времени",
     subtitle: "Q4: Бэкон и Декарт",
     description: "Глава подготовки к четвёртому вопросу листка.",
@@ -988,6 +1028,7 @@ export const worlds: World[] = [
   },
   {
     id: "w5",
+    seminarId: "seminar2",
     title: "Суд Просвещения",
     subtitle: "Q5: природа, человек, договор",
     description: "Глава подготовки к пятому вопросу листка.",
@@ -998,6 +1039,7 @@ export const worlds: World[] = [
   },
   {
     id: "w6",
+    seminarId: "seminar2",
     title: "Финальный босс",
     subtitle: "Смешанный устный опрос",
     description: "Последняя проверка по всему листку.",
@@ -1006,6 +1048,8 @@ export const worlds: World[] = [
     missionIds: ["qfinal"],
     visual: { imageAlt: "Пиксельная аудитория со строгим преподавателем", moodKeywords: ["pixel classroom boss fight", "blackboard", "red pressure meter"], fallbackGradient: "linear-gradient(135deg, #151515, #263238 55%, #9b1c31)", pixelAccent: "#ff4b5c" },
   },
+  ...seminar3Worlds,
+  ...seminar7Worlds,
 ];
 
 export const allSteps = missions.flatMap((mission) => [...mission.steps, mission.finalBossQuestion]);

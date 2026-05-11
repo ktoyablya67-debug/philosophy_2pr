@@ -30,13 +30,13 @@ type Props = {
   onDone: () => void;
 };
 
-function quickSteps(): MissionStep[] {
-  return [...allSteps].sort((a, b) => a.id.localeCompare(b.id)).filter((_, index) => index % 3 === 0).slice(0, 10);
+function quickSteps(seminarId: LearningMission["seminarId"]): MissionStep[] {
+  return [...allSteps].filter((step) => step.seminarId === seminarId).sort((a, b) => a.id.localeCompare(b.id)).filter((_, index) => index % 3 === 0).slice(0, 10);
 }
 
 export function MissionScreen({ mission, quickFight, progress, setProgress, onBack, onDone }: Props) {
   const world = worlds.find((item) => item.id === mission.worldId) ?? worlds[0];
-  const steps = useMemo(() => (quickFight ? quickSteps() : mission.steps), [quickFight, mission]);
+  const steps = useMemo(() => (quickFight ? quickSteps(mission.seminarId) : mission.steps), [quickFight, mission]);
   const [introDone, setIntroDone] = useState(quickFight);
   const [index, setIndex] = useState(0);
   const [answeredIds, setAnsweredIds] = useState<string[]>([]);

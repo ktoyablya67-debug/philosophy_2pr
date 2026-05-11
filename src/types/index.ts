@@ -4,7 +4,23 @@ export type Aesthetic =
   | "renaissance"
   | "newTime"
   | "enlightenment"
+  | "seminar3"
+  | "seminar7"
   | "finalBoss";
+
+export type SeminarId = "seminar2" | "seminar3" | "seminar7";
+
+export type Seminar = {
+  id: SeminarId;
+  title: string;
+  subtitle: string;
+  description: string;
+  textbookRanges: string[];
+  assignmentPath: string;
+  questionIds: string[];
+  notebookTermIds: string[];
+  aesthetic: Aesthetic;
+};
 
 export type WorldVisual = {
   imageUrl?: string;
@@ -16,6 +32,7 @@ export type WorldVisual = {
 
 export type World = {
   id: string;
+  seminarId: SeminarId;
   title: string;
   subtitle: string;
   description: string;
@@ -27,23 +44,35 @@ export type World = {
 
 export type SeminarQuestion = {
   id: string;
+  seminarId: SeminarId;
   number: number;
   title: string;
-  source: "assignment-sheet" | "assignment-sheet-inferred";
+  source: "assignment-sheet" | "assignment-sheet-inferred" | "textbook-control-questions" | "textbook-control-questions-inferred";
   wording: string;
+  fullPrompt?: string;
   subpoints: string[];
   teacherMayAsk: string[];
   mustKnow: string[];
+  requiredKnowledge?: string[];
+  textbookPages?: string[];
+  textbookSections?: string[];
   missionIds: string[];
 };
 
 export type NotebookTerm = {
   id: string;
+  seminarId: SeminarId;
   label: string;
+  title?: string;
   assignmentPages: string[];
+  textbookPages?: string[];
   shortMeaning: string;
+  missionIds?: string[];
+  sourceStatus?: SourceStatus;
   intentionallyStandalone?: boolean;
 };
+
+export type SourceStatus = "textbook_verified" | "assignment_based" | "needs_textbook_review";
 
 export type SourceRefs = {
   textbookPages: string[];
@@ -78,12 +107,13 @@ export type LessonBlock = {
 
 export type LearningMission = {
   id: string;
+  seminarId: SeminarId;
   worldId: string;
   seminarQuestionId: string;
-  assignmentQuestionId: "q1" | "q2" | "q3" | "q4" | "q5" | "q-final";
+  assignmentQuestionId: string;
   assignmentSubtopic: string;
   directAssignmentPrompt: string;
-  sourceStatus: "textbook_verified" | "assignment_based" | "needs_textbook_review";
+  sourceStatus: SourceStatus;
   sourceNote: string;
   sourceRefs: SourceRefs;
   title: string;
@@ -145,6 +175,7 @@ export type MissionStep =
 
 export type BaseStep = {
   id: string;
+  seminarId: SeminarId;
   topic: string;
   coveredTopics: string[];
   scene: string;
@@ -199,6 +230,7 @@ export type BossStep = BaseStep & {
 };
 
 export type UserProgress = {
+  selectedSeminarId: SeminarId;
   xp: number;
   streak: number;
   hearts: number;
@@ -208,6 +240,18 @@ export type UserProgress = {
   weakTopicIds: string[];
   currentWorldId: string;
   currentMissionId: string;
+  completedQuestionIds: string[];
+  progressBySeminar: Record<SeminarId, {
+    completedMissionIds: string[];
+    weakStepIds: string[];
+    weakTopicIds: string[];
+    masteredStepIds: string[];
+    currentWorldId: string;
+    currentMissionId: string;
+    completedQuestionIds: string[];
+    lastPlayedAt: string | null;
+  }>;
+  lastPlayedBySeminar: Partial<Record<SeminarId, string | null>>;
   lastPlayedAt: string | null;
 };
 

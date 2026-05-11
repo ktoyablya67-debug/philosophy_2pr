@@ -9,7 +9,8 @@ import { Layout } from "./components/Layout";
 import { MissionScreen } from "./components/MissionScreen";
 import { WeakSpotsScreen } from "./components/WeakSpotsScreen";
 import { missions } from "./data/gameData";
-import type { LearningMission, Screen, UserProgress } from "./types";
+import type { LearningMission, Screen, SeminarId, UserProgress } from "./types";
+import { selectSeminar } from "./utils/progress";
 import { loadProgress, resetProgress, saveProgress } from "./utils/storage";
 
 export default function App() {
@@ -27,6 +28,13 @@ export default function App() {
     setQuickFight(false);
     setActiveMissionId(id);
     setScreen("mission");
+  }
+
+  function chooseSeminar(id: SeminarId) {
+    const next = selectSeminar(progress, id);
+    setProgressState(next);
+    setActiveMissionId(next.currentMissionId);
+    setScreen("home");
   }
 
   function openQuickFight() {
@@ -47,6 +55,7 @@ export default function App() {
       {screen === "home" && (
         <HomeScreen
           progress={progress}
+          onSelectSeminar={chooseSeminar}
           onContinue={() => openMission(progress.currentMissionId)}
           onCampaign={() => setScreen("campaign")}
           onAssignment={() => setScreen("assignment")}
@@ -58,7 +67,7 @@ export default function App() {
         />
       )}
       {screen === "campaign" && <CampaignScreen progress={progress} onOpenMission={openMission} />}
-      {screen === "assignment" && <AssignmentSheetScreen onOpenMission={openMission} />}
+      {screen === "assignment" && <AssignmentSheetScreen progress={progress} onOpenMission={openMission} />}
       {screen === "mission" && (
         <MissionScreen
           mission={activeMission}
@@ -71,7 +80,7 @@ export default function App() {
       )}
       {screen === "weak" && <WeakSpotsScreen progress={progress} onOpenMission={openMission} />}
       {screen === "finalBoss" && <FinalBossScreen progress={progress} setProgress={setProgress} onDone={() => setScreen("home")} />}
-      {screen === "coverage" && <CoverageCheckScreen />}
+      {screen === "coverage" && <CoverageCheckScreen seminarId={progress.selectedSeminarId} />}
       {screen === "data" && <DataCheckScreen />}
     </Layout>
   );

@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "content:check": "node scripts/content_check.cjs",
     "preview": "vite preview"
   },
   "dependencies": {

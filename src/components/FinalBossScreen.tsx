@@ -10,7 +10,10 @@ import { ProgressBar } from "./ProgressBar";
 type Props = { progress: UserProgress; setProgress: (progress: UserProgress) => void; onDone: () => void };
 
 export function FinalBossScreen({ progress, setProgress, onDone }: Props) {
-  const questions = useMemo(() => bossQuestions.filter((_, index) => index % 2 === 0).slice(0, 12), []);
+  const questions = useMemo(
+    () => bossQuestions.filter((question) => question.seminarId === progress.selectedSeminarId).filter((_, index) => index % 2 === 0).slice(0, 12),
+    [progress.selectedSeminarId],
+  );
   const [index, setIndex] = useState(0);
   const [scores, setScores] = useState<Record<string, boolean>>({});
   const done = index >= questions.length;
